@@ -1,18 +1,6 @@
-R = QQ['t']
-t = R.0
-Sym = SymmetricFunctions(R)
-s = Sym.schur()
-e = Sym.elementary()
-p = Sym.powersum()
-h = Sym.homogeneous()
-m = Sym.monomial()
-f = e.dual_basis()
-q = p.dual_basis()
-
-QSym = QuasiSymmetricFunctions(R)
-M = QSym.M()
-F = QSym.F()
-QS = QSym.QS()
+import json
+import numpy as np
+import itertools
 
 def generate_UIO(n, connected=False):
     if connected == False:
@@ -32,23 +20,44 @@ def generate_UIO(n, connected=False):
         list_UIO.append(copy(seq))
     return list_UIO
 
+def iter_UIO(n, connected=False):
+    if connected == False:
+        k = 1
+    else:
+        k = 2
+    seq = [i+k for i in range(n)]          
+    seq[n-1] = n
+    seq[0] -= 1
+    while seq[0] < n:
+        for i in range(n-1):
+            if seq[i] < seq[i+1]:
+                seq[i] += 1
+                for j in range(i):
+                    seq[j] = j+k
+                break
+        yield seq
+
 def get_equiv_classes(P):
     result = []
     perm_list = []
     N = len(P)
-    for perm in Permutations(N):
+    N_list = [i for i in range(1, N+1)]
+    perm_list = dict()
+
+    for perm in itertools.permutations(N_list):
         perm = list(perm)
-        if perm in perm_list:
+        if str(perm) in perm_list.keys():
             continue
+        perm_list[str(perm)] = True
         queue = [perm]
         for perm in queue:
             word_list = get_equiv_words(P, perm)
             for word in word_list:
-                if word in queue:
+                if str(word) in perm_list.keys():
                     continue
+                perm_list[str(word)] = True
                 queue.append(word)
         result.append(queue)
-        perm_list += queue
     return result
 
 def get_equiv_words(P, word):
@@ -90,7 +99,17 @@ def set_to_comp(n, S):
     return comp
 
 def K_H(P, word_list):
-    K = 0
+    n = len(P)
+    n_str = str(n)
+    K = np.zeros(len(PartitionIndex[n_str]))
     for word in word_list:
-        K += F(set_to_comp(len(word), P_Des(P, word)))
-    return h(K.to_symmetric_function())
+        comp = set_to_comp(len(word), P_Des(P, word))
+        if str(comp) in PartitionIndex[n_str].keys():
+            K[PartitionIndex[n_str][str(comp)]] += 1
+    return np.matmul(K, np.array(TMs[n_str]))
+
+
+with open("PartitionIndex.json", "r") as f:
+    PartitionIndex = json.load(f)
+with open("TransitionMatrix.json", "r") as f:
+    TMs = json.load(f)
