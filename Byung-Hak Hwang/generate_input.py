@@ -108,6 +108,25 @@ def K_H(P, word_list):
             K[PartitionIndex[n_str][str(comp)]] += 1
     return np.matmul(K, np.array(TMs[n_str]))
 
+def get_noDesWords(P, word_list):
+    result = []
+    for word in word_list:
+        if P_Des(P, word) == []:
+            result.append(word)
+    return result
+
+def get_sink_number(P, word):
+    n = 1
+    for i in range(1, len(word)):
+        chk = 0
+        for j in range(i):
+            if is_compatible(P, word[i], word[j]) == 0:
+                chk = 1
+                break
+        if chk == 0:
+            n += 1
+    return n
+
 
 with open("PartitionIndex.json", "r") as f:
     PartitionIndex = json.load(f)
