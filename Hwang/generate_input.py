@@ -1,6 +1,8 @@
 import json
 import numpy as np
 import itertools
+import networkx as nx
+import scipy.sparse as sp
 
 def generate_UIO(n, connected=False):
     if connected == False:
@@ -151,6 +153,19 @@ def split_partitions_along_length(P, K):
         if TF:
             result.append(partitions_length[i])
     return result
+
+def make_sparse_matrix(P, word):
+    n = len(P)
+    row = []
+    col = []
+    data = []
+    for i in range(1,n):
+        for j in range(i):
+            if is_compatible(P, word[i], word[j]) == False:
+                row.append(word[i]-1)
+                col.append(word[j]-1)
+                data.append(1)
+    return sp.coo_matrix((data, (row,col)), shape=(n,n))
 
 with open("PartitionIndex.json", "r") as f:
     PartitionIndex = json.load(f)
