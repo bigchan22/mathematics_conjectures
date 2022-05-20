@@ -127,6 +127,30 @@ def get_sink_number(P, word):
             n += 1
     return n
 
+def split_words_along_sink(P, word_list):
+    words_sink = [[] for i in range(len(P))]
+    for word in word_list:
+        words_sink[get_sink_number(P, word)-1].append(word)
+    result = []
+    for temp in words_sink:
+        if temp != []:
+            result.append(temp)
+    return result
+
+def split_partitions_along_length(P, K):
+    n_str = str(len(P))
+    partitions_length = [np.zeros(len(Partitions[n_str])) for i in range(len(P))]
+    length_flag = [False for i in range(len(P))]
+    for par in Partitions[n_str]:
+        ind = PartitionIndex[n_str][str(par)]
+        if K[ind] > 0:
+            partitions_length[len(par)-1][ind] = K[ind]
+            length_flag[len(par)-1] = True
+    result = []
+    for i, TF in enumerate(length_flag):
+        if TF:
+            result.append(partitions_length[i])
+    return result
 
 with open("PartitionIndex.json", "r") as f:
     PartitionIndex = json.load(f)
