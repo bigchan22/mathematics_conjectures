@@ -132,3 +132,5 @@ with open("PartitionIndex.json", "r") as f:
     PartitionIndex = json.load(f)
 with open("TransitionMatrix.json", "r") as f:
     TMs = json.load(f)
+with open("Partitions.json", "r") as f:
+    Partitions = json.load(f)
