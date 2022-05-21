@@ -1,6 +1,6 @@
 import json
-import numpy as np
 import itertools
+import numpy as np
 import networkx as nx
 import scipy.sparse as sp
 
@@ -129,7 +129,7 @@ def get_sink_number(P, word):
             n += 1
     return n
 
-def split_words_along_sink(P, word_list):
+def cluster_words_along_sink(P, word_list):
     words_sink = [[] for i in range(len(P))]
     for word in word_list:
         words_sink[get_sink_number(P, word)-1].append(word)
@@ -139,7 +139,7 @@ def split_words_along_sink(P, word_list):
             result.append(temp)
     return result
 
-def split_partitions_along_length(P, K):
+def cluster_partitions_along_length(P, K):
     n_str = str(len(P))
     partitions_length = [np.zeros(len(Partitions[n_str])) for i in range(len(P))]
     length_flag = [False for i in range(len(P))]
@@ -166,6 +166,29 @@ def make_sparse_matrix(P, word):
                 col.append(word[j]-1)
                 data.append(1)
     return sp.coo_matrix((data, (row,col)), shape=(n,n))
+
+def make_block_diagonal_sparse_matrix(P, word_list):
+    mats = []
+    for word in word_list:
+        mats.append(make_sparse_matrix(P, word))
+    return sp.block_diag(mats)
+
+def generate_data(DIR_PATH, N=7, connected=False):
+    n = 0
+    XP_list = []
+    for P in iter_UIO(N, connected):
+        equiv_list = get_equiv_classes(P)
+        for equiv_class in equiv_list:
+            noDes_words_along_sinks = cluster_words_along_sink(P, get_noDesWords(P, equiv_class))
+            pars_along_length = cluster_partitions_along_length(P, K_H(P, equiv_class))
+            for word_list in noDes_words_along_sinks:
+                M = make_block_diagonal_sparse_matrix(P, word_list)
+                sp.save_npz(DIR_PATH+f"graph_{n:04d}.npz", M)
+                n += 1
+            for XP in pars_along_length:
+                XP_list.append(list(XP))
+    with open(DIR_PATH+f"XP_{N}.json", 'w') as f:
+        json.dump(XP_list, f, indent=2)
 
 with open("PartitionIndex.json", "r") as f:
     PartitionIndex = json.load(f)
