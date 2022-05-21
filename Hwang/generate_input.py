@@ -183,12 +183,12 @@ def generate_data(DIR_PATH, N=7, connected=False):
             pars_along_length = cluster_partitions_along_length(P, K_H(P, equiv_class))
             for word_list in noDes_words_along_sinks:
                 M = make_block_diagonal_sparse_matrix(P, word_list)
-                sp.save_npz(DIR_PATH+f"graph_{n:04d}.npz", M)
+                sp.save_npz(DIR_PATH+f"graph_{n:06d}.npz", M)
                 n += 1
             for XP in pars_along_length:
                 XP_list.append(list(XP))
     with open(DIR_PATH+f"XP_{N}.json", 'w') as f:
-        json.dump(XP_list, f, indent=2)
+        json.dump(XP_list, f)
 
 with open("PartitionIndex.json", "r") as f:
     PartitionIndex = json.load(f)
