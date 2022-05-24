@@ -57,3 +57,14 @@ def get_PartitionIndex(N):
             PartitionDict[str(par)] = j
         PartitionIndex[i] = PartitionDict
     return PartitionIndex
+
+def get_PartitionMultiplicity(N):
+    PartitionMultiplicity = dict()
+    for i in range(1,N+1):
+        par_list = []
+        for par in Partitions(i):
+            par_list.append(list(par))
+        par_list.sort(key=lambda x : len(x))
+        for par in par_list:
+            PartitionMultiplicity[str(i)].append([par.count(k) for k in range(1,i+1)])
+
