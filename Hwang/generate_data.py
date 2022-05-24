@@ -175,7 +175,7 @@ def make_block_diagonal_sparse_matrix(P, word_list):
 
 def generate_data(DIR_PATH, N=7, connected=False):
     n = 0
-    XP_list = []
+    XPs = []
     for P in iter_UIO(N, connected):
         equiv_list = get_equiv_classes(P)
         for equiv_class in equiv_list:
@@ -186,9 +186,18 @@ def generate_data(DIR_PATH, N=7, connected=False):
                 sp.save_npz(DIR_PATH+f"graph_{n:06d}.npz", M)
                 n += 1
             for XP in pars_along_length:
-                XP_list.append(list(XP))
-    with open(DIR_PATH+f"XP_{N}.json", 'w') as f:
-        json.dump(XP_list, f)
+                XPs.append(list(XP))
+    with open(DIR_PATH+f"XP_{N}_onehot.json", 'w') as f:
+        json.dump(XPs, f)
+    for n in range(1, N+1):
+        with open(DIR_PATH+f"XP_{N}_{n}.json", 'w') as f:
+            XP_n = []
+            for i in range(len(XPs)):
+                XP_n.append(0)
+                for k in range(len(XPs[i])):
+                    XP_n[-1] += XPs[i][k] * PartitionMultiplicity[str(N)][k][n-1]
+            json.dump(XP_n, f)
+                
 
 with open("PartitionIndex.json", "r") as f:
     PartitionIndex = json.load(f)
@@ -196,3 +205,6 @@ with open("TransitionMatrix.json", "r") as f:
     TMs = json.load(f)
 with open("Partitions.json", "r") as f:
     Partitions = json.load(f)
+with open("PartitionMultiplicity.json", "r") as f:
+    PartitionMultiplicity = json.load(f)
+
