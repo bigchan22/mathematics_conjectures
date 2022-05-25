@@ -141,7 +141,7 @@ def cluster_words_along_sink(P, word_list):
 
 def cluster_partitions_along_length(P, K):
     n_str = str(len(P))
-    partitions_length = [np.zeros(len(Partitions[n_str])) for i in range(len(P))]
+    partitions_length = [np.zeros(len(Partitions[n_str]), dtype=int) for i in range(len(P))]
     length_flag = [False for i in range(len(P))]
     for par in Partitions[n_str]:
         ind = PartitionIndex[n_str][str(par)]
@@ -183,10 +183,11 @@ def generate_data(DIR_PATH, N=7, connected=False):
             pars_along_length = cluster_partitions_along_length(P, K_H(P, equiv_class))
             for word_list in noDes_words_along_sinks:
                 M = make_block_diagonal_sparse_matrix(P, word_list)
-                sp.save_npz(DIR_PATH+f"graph_{n:06d}.npz", M)
+                sp.save_npz(DIR_PATH+f"graph_{n:04d}.npz", M)
                 n += 1
             for XP in pars_along_length:
-                XPs.append(list(XP))
+                temp = [int(val) for val in list(XP)]
+                XPs.append(temp)
     with open(DIR_PATH+f"XP_{N}_onehot.json", 'w') as f:
         json.dump(XPs, f)
     for n in range(1, N+1):
