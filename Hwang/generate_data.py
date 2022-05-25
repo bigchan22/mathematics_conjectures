@@ -190,6 +190,8 @@ def generate_data(DIR_PATH, N=7, connected=False):
                 XPs.append(temp)
     with open(DIR_PATH+f"XP_{N}_onehot.json", 'w') as f:
         json.dump(XPs, f)
+    
+    XP_mult = [[0 for i in range(N)] for j in range(len(XPs))]
     for n in range(1, N+1):
         with open(DIR_PATH+f"XP_{N}_{n}.json", 'w') as f:
             XP_n = []
@@ -197,7 +199,10 @@ def generate_data(DIR_PATH, N=7, connected=False):
                 XP_n.append(0)
                 for k in range(len(XPs[i])):
                     XP_n[-1] += XPs[i][k] * PartitionMultiplicity[str(N)][k][n-1]
+                XP_mult[i][n-1] = XP_n[-1]
             json.dump(XP_n, f)
+    with open(DIR_PATH+f"XP_{N}_multiplicity.json", 'w') as f:
+        json.dump(XP_mult, f)
                 
 
 with open("PartitionIndex.json", "r") as f:
