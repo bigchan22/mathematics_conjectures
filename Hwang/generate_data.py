@@ -238,14 +238,12 @@ def generate_data(DIR_PATH, N=7, primitive = True, connected=False, extended=Tru
     
     XP_mult = [[0 for i in range(N)] for j in range(len(XPs))]
     for n in range(1, N+1):
-        with open(DIR_PATH+f"XP_{N}_{n}.json", 'w') as f:
-            XP_n = []
-            for i in range(len(XPs)):
-                XP_n.append(0)
-                for k in range(len(XPs[i])):
-                    XP_n[-1] += XPs[i][k] * PartitionMultiplicity[str(N)][k][n-1]
-                XP_mult[i][n-1] = XP_n[-1]
-            # json.dump(XP_n, f)
+        XP_n = []
+        for i in range(len(XPs)):
+            XP_n.append(0)
+            for k in range(len(XPs[i])):
+                XP_n[-1] += XPs[i][k] * PartitionMultiplicity[str(N)][k][n-1]
+            XP_mult[i][n-1] = XP_n[-1]
     if extended:
         cnt = 0
         m = len(XPs)
