@@ -265,7 +265,8 @@ def generate_data(DIR_PATH, N=7, primitive = True, connected=False, extended=Tru
             mats.append(Ms[k])
             arr += np.array(XP_mult[k])
             Ms.append(sp.block_diag(mats))
-            XP_mult.append(list(arr))
+            temp = [int(val) for val in list(arr)]
+            XP_mult.append(temp)
             cnt += 3
     
     for n, mat in enumerate(Ms):
