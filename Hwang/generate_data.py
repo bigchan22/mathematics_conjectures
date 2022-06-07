@@ -212,23 +212,29 @@ def make_block_diagonal_sparse_matrix(P, word_list):
         mats.append(make_sparse_matrix(P, word))
     return sp.block_diag(mats)
 
-def generate_data(DIR_PATH, N=7, primitive = True, connected=False):
+def generate_data(DIR_PATH, N=7, primitive = True, connected=False, extended=True):
     n = 0
+    Ms = []
     XPs = []
     for P in iter_UIO(N, connected):
         equiv_list = get_equiv_classes(P, primitive)
         for equiv_class in equiv_list:
-            noDes_words_along_sinks = cluster_words_along_sink(P, get_noDesWords(P, equiv_class))
-            pars_along_length = cluster_partitions_along_length(P, K_H(P, equiv_class))
+            noDes = get_noDesWords(P, equiv_class)
+            pars = K_H(P, equiv_class)
+            noDes_words_along_sinks = cluster_words_along_sink(P, noDes)
+            pars_along_length = cluster_partitions_along_length(P, pars)
             for word_list in noDes_words_along_sinks:
-                M = make_block_diagonal_sparse_matrix(P, word_list)
-                sp.save_npz(DIR_PATH+f"graph_{n:04d}.npz", M)
-                n += 1
+                Ms.append(make_block_diagonal_sparse_matrix(P, word_list))
             for XP in pars_along_length:
                 temp = [int(val) for val in list(XP)]
                 XPs.append(temp)
-    with open(DIR_PATH+f"XP_{N}_onehot.json", 'w') as f:
-        json.dump(XPs, f)
+            if extended and len(noDes) > 1:
+                Ms.append(make_block_diagonal_sparse_matrix(P, noDes))
+                temp = [int(val) for val in list(pars)]
+                XPs.append(temp)
+    
+    # with open(DIR_PATH+f"XP_{N}_onehot.json", 'w') as f:
+    #     json.dump(XPs, f)
     
     XP_mult = [[0 for i in range(N)] for j in range(len(XPs))]
     for n in range(1, N+1):
@@ -239,10 +245,35 @@ def generate_data(DIR_PATH, N=7, primitive = True, connected=False):
                 for k in range(len(XPs[i])):
                     XP_n[-1] += XPs[i][k] * PartitionMultiplicity[str(N)][k][n-1]
                 XP_mult[i][n-1] = XP_n[-1]
-            json.dump(XP_n, f)
+            # json.dump(XP_n, f)
+    if extended:
+        cnt = 0
+        m = len(XPs)
+        while cnt < m:
+            k = np.random.randint(m)
+            if not 0 in XP_mult[k]:
+                continue
+            mats = [Ms[k]]
+            arr = np.array(XP_mult[k])
+            pos = list(np.where(arr == 0)[0])
+            for p in pos:
+                while True:
+                    k = np.random.randint(m)
+                    if XP_mult[k][p] > 0:
+                        mats.append(Ms[k])
+                        arr += np.array(XP_mult[k])
+                        break
+            k = np.random.randint(m)
+            mats.append(Ms[k])
+            arr += np.array(XP_mult[k])
+            Ms.append(sp.block_diag(mats))
+            XP_mult.append(list(arr))
+            cnt += 3
+    
+    for n, mat in enumerate(Ms):
+        sp.save_npz(DIR_PATH+f"graph_{n:05d}.npz", mat)
     with open(DIR_PATH+f"XP_{N}_multiplicity.json", 'w') as f:
         json.dump(XP_mult, f)
-                
 
 with open("PartitionIndex.json", "r") as f:
     PartitionIndex = json.load(f)
