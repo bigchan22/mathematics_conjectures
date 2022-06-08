@@ -212,7 +212,7 @@ def make_block_diagonal_sparse_matrix(P, word_list):
         mats.append(make_sparse_matrix(P, word))
     return sp.block_diag(mats)
 
-def generate_data(DIR_PATH, N=7, primitive = True, connected=False, extended=True):
+def generate_data(DIR_PATH, N=7, primitive = True, connected=False, extended=False):
     n = 0
     Ms = []
     XPs = []
