@@ -24,6 +24,8 @@ feature_list = {
             'constant_feature': constant_feature,
 #             'numbering_feature': numbering_feature,
         }
+        
+label_size = {7: [0, 60, 36, 35, 28, 38, 58, 85]}
 
 ################################
 
