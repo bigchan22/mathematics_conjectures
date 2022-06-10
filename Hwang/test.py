@@ -204,7 +204,7 @@ with open("logs.out", "a") as f:
     
     train_accuracy, test_accuracy, combined_accuracy = print_accuracies(trained_params, test_dataset, train_dataset, batch_size)
     f.write("\n--Result--\n")
-    f.write("                  Train |  Test | Combined")
+    f.write("                  Train |  Test | Combined\n")
     f.write(f'Baseline accuracy {get_baseline_accuracy(train_dataset.labels):.3f} | '
             f'{get_baseline_accuracy(test_dataset.labels):.3f} | '
             f'{get_baseline_accuracy(full_dataset.labels):.3f}\n')
