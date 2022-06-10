@@ -202,6 +202,6 @@ with open("logs.out", "a") as f:
     f.write(f'Baseline accuracy {get_baseline_accuracy(train_dataset.labels):.3f} | '
             f'{get_baseline_accuracy(test_dataset.labels):.3f} | '
             f'{get_baseline_accuracy(full_dataset.labels):.3f}\n')
-    f.write(f'Train accuracy    {train_accuracy:.3f} | '
+    f.write(f'Model accuracy    {train_accuracy:.3f} | '
             f'{test_accuracy:.3f} | '
             f'{combined_accuracy:.3f}\n')
