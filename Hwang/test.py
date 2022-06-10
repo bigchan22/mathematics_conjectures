@@ -176,17 +176,17 @@ except Exception as ex:
 
 print('Baseline accuracy', get_baseline_accuracy(train_dataset.labels))
 
-print('Computing saliences...')
-salience_fn = jax.jit(jax.grad(lambda *args: jnp.sum(model.loss(*args)), 1))
-salient_features_arr = get_salience_vectors(salience_fn, trained_params,
-                                            full_dataset, batch_size)
-saliencies = np.linalg.norm(
-    np.concatenate(salient_features_arr, axis=0), axis=1)
+# print('Computing saliences...')
+# salience_fn = jax.jit(jax.grad(lambda *args: jnp.sum(model.loss(*args)), 1))
+# salient_features_arr = get_salience_vectors(salience_fn, trained_params,
+#                                             full_dataset, batch_size)
+# saliencies = np.linalg.norm(
+#     np.concatenate(salient_features_arr, axis=0), axis=1)
 
-print(f"max saliency = {max(saliencies)}")
+# print(f"max saliency = {max(saliencies)}")
 
-cutoff = np.percentile(saliencies, 99)
-print(f"cutoff 0.99 = {cutoff}")
+# cutoff = np.percentile(saliencies, 99)
+# print(f"cutoff 0.99 = {cutoff}")
 
 
 
