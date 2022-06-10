@@ -179,7 +179,7 @@ print('Baseline accuracy', get_baseline_accuracy(train_dataset.labels))
 print('Computing saliences...')
 salience_fn = jax.jit(jax.grad(lambda *args: jnp.sum(model.loss(*args)), 1))
 salient_features_arr = get_salience_vectors(salience_fn, trained_params,
-                                            full_dataset)
+                                            full_dataset, batch_size)
 saliencies = np.linalg.norm(
     np.concatenate(salient_features_arr, axis=0), axis=1)
 

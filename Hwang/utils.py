@@ -520,7 +520,7 @@ def get_baseline_accuracy(labels):
     return max(np.bincount(labels[:, 0])) / labels.shape[0]
 
 
-def get_salience_vectors(salience_fn, params, full_dataset):
+def get_salience_vectors(salience_fn, params, full_dataset, batch_size=100):
     salient_features_arr = []
     for i in range(0, len(full_dataset.features), batch_size):
         b_features, b_rows, b_cols, b_ys, b_masks = batch(
