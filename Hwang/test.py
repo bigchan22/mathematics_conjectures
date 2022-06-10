@@ -12,6 +12,8 @@ num_layers = 5
 num_features = 64
 num_epochs = 100
 batch_size = 200
+use_pretrained_weights = False
+save_trained_weights = True
 
 feature_list = {
 #             'in_centrality': nx.in_degree_centrality,
@@ -96,11 +98,15 @@ opt_init, opt_update = optax.adam(step_size)
 
 
 # @title Perform training / Load pretrained weights
-use_pretrained_weights = False
 try:
     if use_pretrained_weights:
-        pass
-    else:
+        try:
+            with open(os.path.join(PARAM_DIR, f'parameters_{N}_{partition_part}_{num_layers}_{num_features}.pickle'), 'rb') as f:
+                trained_params = pickle.load(f)
+        except:
+            print("There is no trained parameters")
+            use_pretrained_weights = False
+    if use_pretrained_weights == False:
         trained_params = model.net.init(
             jax.random.PRNGKey(42),
             features=train_dataset.features[0],
@@ -108,63 +114,63 @@ try:
             cols=train_dataset.columns[0],
             batch_size=1,
             masks=train_dataset.features[0][np.newaxis, :, :])
-        trained_opt_state = opt_init(trained_params)
+    
+    trained_opt_state = opt_init(trained_params)
+    for ep in range(1, num_epochs + 1):
+        tr_data = list(
+            zip(
+                train_dataset.features,
+                train_dataset.rows,
+                train_dataset.columns,
+                train_dataset.labels,
+                train_dataset.root_nodes,
+            ))
+        random.shuffle(tr_data)
+        features_train, rows_train, cols_train, ys_train, root_nodes_train = zip(
+            *tr_data)
 
-        for ep in range(1, num_epochs + 1):
-            tr_data = list(
-                zip(
-                    train_dataset.features,
-                    train_dataset.rows,
-                    train_dataset.columns,
-                    train_dataset.labels,
-                    train_dataset.root_nodes,
-                ))
-            random.shuffle(tr_data)
-            features_train, rows_train, cols_train, ys_train, root_nodes_train = zip(
-                *tr_data)
+        features_train = list(features_train)
+        rows_train = list(rows_train)
+        cols_train = list(cols_train)
+        ys_train = np.array(ys_train)
+        root_nodes_train = list(root_nodes_train)
 
-            features_train = list(features_train)
-            rows_train = list(rows_train)
-            cols_train = list(cols_train)
-            ys_train = np.array(ys_train)
-            root_nodes_train = list(root_nodes_train)
+        for i in range(0, len(features_train), batch_size):
+            b_features, b_rows, b_cols, b_ys, b_masks = batch(
+                features_train[i:i + batch_size],
+                rows_train[i:i + batch_size],
+                cols_train[i:i + batch_size],
+                ys_train[i:i + batch_size],
+                root_nodes_train[i:i + batch_size],
+            )
 
-            for i in range(0, len(features_train), batch_size):
-                b_features, b_rows, b_cols, b_ys, b_masks = batch(
-                    features_train[i:i + batch_size],
-                    rows_train[i:i + batch_size],
-                    cols_train[i:i + batch_size],
-                    ys_train[i:i + batch_size],
-                    root_nodes_train[i:i + batch_size],
-                )
+            trained_params, trained_opt_state, curr_loss = train(
+                trained_params,
+                trained_opt_state,
+                b_features,
+                b_rows,
+                b_cols,
+                b_ys,
+                b_masks,
+            )
 
-                trained_params, trained_opt_state, curr_loss = train(
-                    trained_params,
-                    trained_opt_state,
-                    b_features,
-                    b_rows,
-                    b_cols,
-                    b_ys,
-                    b_masks,
-                )
+            accs = model.accuracy(
+                trained_params,
+                b_features,
+                b_rows,
+                b_cols,
+                b_ys,
+                b_masks,
+            )
+#             print(datetime.datetime.now(),
+#                   f"Iteration {i:5d} | Batch loss {curr_loss:.6f}",
+#                   f"Batch accuracy {accs:.2f}")
 
-                accs = model.accuracy(
-                    trained_params,
-                    b_features,
-                    b_rows,
-                    b_cols,
-                    b_ys,
-                    b_masks,
-                )
-    #             print(datetime.datetime.now(),
-    #                   f"Iteration {i:5d} | Batch loss {curr_loss:.6f}",
-    #                   f"Batch accuracy {accs:.2f}")
+        print(datetime.datetime.now(), f"Epoch {ep:2d} completed!")
 
-            print(datetime.datetime.now(), f"Epoch {ep:2d} completed!")
-
-            # Calculate accuracy across full dataset once per epoch
-            print(datetime.datetime.now(), f"Epoch {ep:2d}       | ", end="")
-            print_accuracies(trained_params, test_dataset, train_dataset, batch_size) 
+        # Calculate accuracy across full dataset once per epoch
+        print(datetime.datetime.now(), f"Epoch {ep:2d}       | ", end="")
+        print_accuracies(trained_params, test_dataset, train_dataset, batch_size) 
 except Exception as ex:
     print(f"The following exception occurs: {ex}")
 
@@ -205,3 +211,7 @@ with open("logs.out", "a") as f:
     f.write(f'Model accuracy    {train_accuracy:.3f} | '
             f'{test_accuracy:.3f} | '
             f'{combined_accuracy:.3f}\n')
+
+if save_trained_weights:
+    with open(os.path.join(PARAM_DIR, f'parameters_{N}_{partition_part}_{num_layers}_{num_features}.pickle'), 'wb') as f:
+        pickle.dump(trained_params, f)

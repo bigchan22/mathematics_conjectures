@@ -23,7 +23,9 @@ import psutil
 import scipy.sparse as sp
 import seaborn as sns
 
-GRAPH_DIR = '/Data/Min/mathematics_conjectures/Hwang/Data'
+DIR_PATH = '/Data/Min/mathematics_conjectures/Hwang'
+GRAPH_DIR = os.path.join(DATA_DIR, 'Data')
+PARAM_DIR = os.path.join(DATA_DIR, 'Parameters')
 NUM_GRAPHS = len([f for f in os.listdir(GRAPH_DIR) if f.startswith("graph_")])
 train_fraction = .8
 step_size = 0.001
