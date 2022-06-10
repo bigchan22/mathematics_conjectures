@@ -27,6 +27,7 @@ feature_list = {
 
 ################################
 
+
 def compute_accuracies(params_to_evaluate, dataset, batch_size=100):
     total_correct = 0.0
     for i in range(0, len(dataset.features), batch_size):
@@ -65,11 +66,6 @@ def train(params, opt_state, features, rows, cols, ys, masks):
     updates, opt_state = opt_update(gradient, opt_state)
     new_params = optax.apply_updates(params, updates)
     return new_params, opt_state, curr_loss
-
-
-GRAPH_DIR = '/Data/Min/mathematics_conjectures/Hwang/Data'
-NUM_GRAPHS = len([f for f in os.listdir(GRAPH_DIR) if f.startswith("graph_")])
-train_fraction = .8
 
 print("Loading input data...")
 full_dataset, train_dataset, test_dataset = load_input_data(partition_part, feature_list)
