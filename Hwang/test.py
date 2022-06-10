@@ -76,7 +76,7 @@ full_dataset, train_dataset, test_dataset = load_input_data(N, partition_part, f
 
 step_size = 0.001
 
-num_classes = np.max(full_dataset.labels) + 1
+num_classes = label_size[N][partition_part]
 model = Model(
     num_layers=num_layers,
     num_features=num_features,
