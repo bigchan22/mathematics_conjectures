@@ -25,9 +25,8 @@ import seaborn as sns
 
 DIR_PATH = '/Data/Min/mathematics_conjectures/Hwang'
 GRAPH_DIR = os.path.join(DIR_PATH, 'Data')
-PARAM_DIR = os.path.join(DIR_PATH, 'Parameters') 
+PARAM_DIR = os.path.join(DIR_PATH, 'Parameters')
 NUM_GRAPHS = len([f for f in os.listdir(GRAPH_DIR) if f.startswith("graph_")])
-N = 7
 train_fraction = .8
 step_size = 0.001
 
@@ -97,7 +96,7 @@ class GraphData:
     adjacencies: Sequence[sp.csr_matrix]
 
 
-def generate_graph_data(partition_part, feat_list):
+def generate_graph_data(N, partition_part, feat_list):
     """Generate dataset for training GraphNet model on KL data.
 
     This generates a dataset for training a GraphNet model.
@@ -108,7 +107,7 @@ def generate_graph_data(partition_part, feat_list):
     Returns:
     An GraphData instance with features, adjacencies and labels.
     """
-    par_mults = read_partition_multiplicity()
+    par_mults = read_partition_multiplicity(N)
 
     ys = np.array([par_mult for par_mult in par_mults])
     ys = ys[:, partition_part - 1:partition_part]
@@ -153,10 +152,9 @@ def get_root_node(col):
     return np.bincount(col).argmin()
 
 
-def read_partition_multiplicity():
+def read_partition_multiplicity(N):
     with open(os.path.join(GRAPH_DIR, f"XP_{N}_multiplicity.json")) as f:
         return json.load(f)
-
 
 @dataclasses.dataclass(frozen=True)
 class InputData:
@@ -167,7 +165,7 @@ class InputData:
     root_nodes: Sequence[int]
 
 
-def load_input_data(partition_part=1, feat_list=None, extended=True):
+def load_input_data(N=7, partition_part=1, feat_list=None, extended=True, label_size=None):
     """Loads input data for the specified prediction problem.
 
     This loads a dataset that can be used with a GraphNet model. The Bruhat
@@ -185,7 +183,7 @@ def load_input_data(partition_part=1, feat_list=None, extended=True):
     """
 
     print(f"Generating data for partition_part {partition_part}", flush=True)
-    graph_data = generate_graph_data(partition_part, feat_list)
+    graph_data = generate_graph_data(N, partition_part, feat_list)
     zip_data = list(
         zip(
             graph_data.features,
@@ -237,9 +235,10 @@ def load_input_data(partition_part=1, feat_list=None, extended=True):
                 p_feature = np.append(p_feature, features[q], axis=0)
                 p_adjacencies.append(sp.coo_matrix(adjacencies[q]))
                 p_y += ys[q]
-            features.append(p_feature)
-            adjacencies.append(sp.csr_array(sp.block_diag(p_adjacencies)))
-            ys = np.append(ys, p_y.reshape(-1,1), axis=0)
+            if label_size == None or p_y[0] <= label_size[N][partition_part]:
+                features.append(p_feature)
+                adjacencies.append(sp.csr_array(sp.block_diag(p_adjacencies)))
+                ys = np.append(ys, p_y.reshape(-1,1), axis=0)
     
     rows = [sp.coo_matrix(a).row for a in adjacencies]
     cols = [sp.coo_matrix(a).col for a in adjacencies]

@@ -24,7 +24,7 @@ feature_list = {
             'constant_feature': constant_feature,
 #             'numbering_feature': numbering_feature,
         }
-        
+
 label_size = {7: [0, 60, 36, 35, 28, 38, 58, 85]}
 
 ################################
@@ -70,7 +70,7 @@ def train(params, opt_state, features, rows, cols, ys, masks):
     return new_params, opt_state, curr_loss
 
 print("Loading input data...")
-full_dataset, train_dataset, test_dataset = load_input_data(partition_part, feature_list)
+full_dataset, train_dataset, test_dataset = load_input_data(N, partition_part, feature_list, label_size)
 
 # @title Network Setup
 
@@ -168,7 +168,7 @@ try:
 
         # Calculate accuracy across full dataset once per epoch
         print(datetime.datetime.now(), f"Epoch {ep:2d}       | ", end="")
-        print_accuracies(trained_params, test_dataset, train_dataset, batch_size) 
+        print_accuracies(trained_params, test_dataset, train_dataset, batch_size)
 except Exception as ex:
     print(f"The following exception occurs: {ex}")
 
