@@ -197,6 +197,9 @@ print('Baseline accuracy', get_baseline_accuracy(train_dataset.labels))
 
 
 ################################
+if save_trained_weights:
+    with open(PARAM_FILE, 'wb') as f:
+        pickle.dump(trained_params, f)
 
 with open("logs.out", "a") as f:
     f.write("========================================================================\n")
@@ -218,8 +221,4 @@ with open("logs.out", "a") as f:
     f.write(f'Model accuracy    {train_accuracy:.3f} | '
             f'{test_accuracy:.3f} | '
             f'{combined_accuracy:.3f}\n')
-
-if save_trained_weights:
-    with open(PARAM_FILE, 'wb') as f:
-        pickle.dump(trained_params, f)
 
