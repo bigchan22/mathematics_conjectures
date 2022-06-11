@@ -23,6 +23,9 @@ import psutil
 import scipy.sparse as sp
 import seaborn as sns
 
+import warnings
+warnings.filterwarnings('ignore')
+
 DIR_PATH = '/Data/Min/mathematics_conjectures/Hwang'
 GRAPH_DIR = os.path.join(DIR_PATH, 'Data')
 PARAM_DIR = os.path.join(DIR_PATH, 'Parameters')
