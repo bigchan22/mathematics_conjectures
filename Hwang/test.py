@@ -27,9 +27,9 @@ feature_list = {
 
 label_size = {7: [0, 60, 36, 35, 28, 38, 58, 85]}
 
-PARAM_FILE = os.path.join(PARAM_DIR, f'parameters_{N}_{partition_part}_{num_layers}_{num_features}_')
+PARAM_FILE = os.path.join(PARAM_DIR, f'parameters_{N}_{partition_part}_{num_layers}_{num_features}')
 for key in feature_list.keys():
-    PARAM_FILE += key
+    PARAM_FILE += f'_{key[:-8]}'
 PARAM_FILE += '.pickle'
 
 ################################
@@ -219,4 +219,3 @@ if save_trained_weights:
     with open(PARAM_FILE, 'wb') as f:
         pickle.dump(trained_params, f)
 
-        
