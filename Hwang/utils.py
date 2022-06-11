@@ -28,7 +28,6 @@ GRAPH_DIR = os.path.join(DIR_PATH, 'Data')
 PARAM_DIR = os.path.join(DIR_PATH, 'Parameters')
 NUM_GRAPHS = len([f for f in os.listdir(GRAPH_DIR) if f.startswith("graph_")])
 train_fraction = .8
-step_size = 0.001
 
 def random_feature(D):
     rand_feature = dict.fromkeys(D.nodes)

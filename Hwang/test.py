@@ -15,6 +15,8 @@ batch_size = 200
 use_pretrained_weights = True
 save_trained_weights = True
 
+step_size = 0.001
+
 feature_list = {
 #             'in_centrality': nx.in_degree_centrality,
 #             'out_centrality': nx.out_degree_centrality,
@@ -78,8 +80,6 @@ print("Loading input data...")
 full_dataset, train_dataset, test_dataset = load_input_data(N, partition_part, feature_list, label_size)
 
 # @title Network Setup
-
-step_size = 0.001
 
 num_classes = label_size[N][partition_part]
 model = Model(
