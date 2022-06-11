@@ -1,6 +1,9 @@
 from calendar import EPOCH
 from utils import *
 
+import warnings
+warnings.filterwarnings('ignore')
+
 
 ################################
 ##### Training information #####
@@ -197,6 +200,7 @@ print('Baseline accuracy', get_baseline_accuracy(train_dataset.labels))
 
 with open("logs.out", "a") as f:
     f.write("========================================================================\n")
+    f.write(f'{datetime.datetime.now()} Training completed!\n')
     f.write(f"N, Partition part: {N}, {partition_part}\n")
     f.write(f"Number of layers: {num_layers}\n")
     f.write(f"Number of epochs: {ep}\n")
