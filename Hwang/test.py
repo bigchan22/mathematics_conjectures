@@ -27,6 +27,11 @@ feature_list = {
 
 label_size = {7: [0, 60, 36, 35, 28, 38, 58, 85]}
 
+PARAM_FILE = os.path.join(PARAM_DIR, f'parameters_{N}_{partition_part}_{num_layers}_{num_features}_')
+for key in feature_list.keys():
+    PARAM_FILE += key
+PARAM_FILE += '.pickle'
+
 ################################
 
 
@@ -99,7 +104,7 @@ opt_init, opt_update = optax.adam(step_size)
 try:
     if use_pretrained_weights:
         try:
-            with open(os.path.join(PARAM_DIR, f'parameters_{N}_{partition_part}_{num_layers}_{num_features}.pickle'), 'rb') as f:
+            with open(PARAM_FILE, 'rb') as f:
                 trained_params = pickle.load(f)
         except:
             print("There is no trained parameters")
@@ -211,5 +216,7 @@ with open("logs.out", "a") as f:
             f'{combined_accuracy:.3f}\n')
 
 if save_trained_weights:
-    with open(os.path.join(PARAM_DIR, f'parameters_{N}_{partition_part}_{num_layers}_{num_features}.pickle'), 'wb') as f:
+    with open(PARAM_FILE, 'wb') as f:
         pickle.dump(trained_params, f)
+
+        
