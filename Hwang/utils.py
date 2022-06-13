@@ -536,6 +536,5 @@ def get_salience_vectors(salience_fn, params, full_dataset, batch_size=100):
         print(type(salient_features))
         effective_batch_size = len(full_dataset.features[i:i + batch_size])
         salient_features_arr.extend(
-            np.reshape(salient_features, [effective_batch_size, -1, 2]))
+            np.reshape(salient_features, [effective_batch_size, -1, full_dataset.features[0].shape[1]]))
     return salient_features_arr
-
