@@ -26,7 +26,7 @@ import psutil
 import scipy.sparse as sp
 import seaborn as sns
 
-DIR_PATH = '/Data/Min/mathematics_conjectures/Hwang'
+DIR_PATH = '/root/Hwang/mathematics_conjectures/Hwang'
 GRAPH_DIR = os.path.join(DIR_PATH, 'Data')
 PARAM_DIR = os.path.join(DIR_PATH, 'Parameters')
 NUM_GRAPHS = len([f for f in os.listdir(GRAPH_DIR) if f.startswith("graph_")])
@@ -516,10 +516,8 @@ class Model:
         acc = jnp.mean(pred == true_vals)
         return acc
 
-
 def get_baseline_accuracy(labels):
     return max(np.bincount(labels[:, 0])) / labels.shape[0]
-
 
 def get_salience_vectors(salience_fn, params, full_dataset, batch_size=100):
     salient_features_arr = []
