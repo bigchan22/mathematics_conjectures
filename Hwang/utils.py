@@ -186,17 +186,22 @@ def load_input_data(N=7, partition_part=1, feat_list=None, extended=True, label_
 
     print(f"Generating data for partition_part {partition_part}", flush=True)
     graph_data = generate_graph_data(N, partition_part, feat_list)
-    zip_data = list(
-        zip(
-            graph_data.features,
-            graph_data.adjacencies,
-            graph_data.labels,
-        ))
-    random.shuffle(zip_data)
-    features, adjacencies, ys = zip(*zip_data)
-    features = list(features)
-    adjacencies = list(adjacencies)
-    ys = np.array(ys)
+    features = graph_data.features
+    adjacencies = graph_data.adjacencies
+    ys = graph_data.labels
+
+    # zip_data = list(
+    #     zip(
+    #         graph_data.features,
+    #         graph_data.adjacencies,
+    #         graph_data.labels,
+    #     ))
+    # random.shuffle(zip_data)
+    # features, adjacencies, ys = zip(*zip_data)
+    # features = list(features)
+    # adjacencies = list(adjacencies)
+    # ys = np.array(ys)
+
     
 ############################################################################
 #     graph_data = generate_graph_data(partition_part)
