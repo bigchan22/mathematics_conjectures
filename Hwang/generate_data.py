@@ -216,7 +216,6 @@ def make_block_diagonal_sparse_matrix(P, word_list):
     return sp.block_diag(mats)
 
 def generate_data(DIR_PATH, input_N=7, primitive = True, connected=False, extended=False, UPTO_N=False):
-    n = 0
     Ms = []
     XPs = []
     if UPTO_N:
@@ -278,10 +277,14 @@ def generate_data(DIR_PATH, input_N=7, primitive = True, connected=False, extend
                 cnt += 3
         N += 1
     
-    for n, mat in enumerate(Ms):
-        sp.save_npz(DIR_PATH+f"graph_{n:05d}.npz", mat)
+    ind = np.arange(len(Ms))
+    np.random.shuffle(ind)
+    XP_mult_shuffle = []
+    for i in range(len(ind)):
+        sp.save_npz(DIR_PATH+f"graph_{i:05d}.npz", Ms[ind[i]])
+        XP_mult_shuffle.append(XP_mult[ind[i]])
     with open(DIR_PATH+f"XP_{input_N}_multiplicity.json", 'w') as f:
-        json.dump(XP_mult, f)
+        json.dump(XP_mult_shuffle, f)
 
 with open("PartitionIndex.json", "r") as f:
     PartitionIndex = json.load(f)
