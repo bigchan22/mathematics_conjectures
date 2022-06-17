@@ -1,5 +1,5 @@
-import generate_input as gen
+import generate_data as gen
 
-DIR_PATH = '/Data/Min/mathematics_conjectures/Hwang/Data/'
+DIR_PATH = '/root/Hwang/mathematics_conjectures/Hwang/Data/'
 !mkdir {DIR_PATH}
-gen.generate_data(DIR_PATH=DIR_PATH, N=9, connected=True)
+gen.generate_data(DIR_PATH=DIR_PATH, N=7, primitive = True, connected=False, extended=False, UPTO_N=False)
