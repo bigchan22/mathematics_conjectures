@@ -23,6 +23,9 @@ def generate_UIO(n, connected=False):
     return list_UIO
 
 def iter_UIO(n, connected=False):
+    if n == 1:
+        yield [1]
+        return
     if connected == False:
         k = 1
     else:
