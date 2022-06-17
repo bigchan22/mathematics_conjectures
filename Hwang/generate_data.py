@@ -280,7 +280,7 @@ def generate_data(DIR_PATH, input_N=7, primitive = True, connected=False, extend
     
     for n, mat in enumerate(Ms):
         sp.save_npz(DIR_PATH+f"graph_{n:05d}.npz", mat)
-    with open(DIR_PATH+f"XP_{N}_multiplicity.json", 'w') as f:
+    with open(DIR_PATH+f"XP_{input_N}_multiplicity.json", 'w') as f:
         json.dump(XP_mult, f)
 
 with open("PartitionIndex.json", "r") as f:
