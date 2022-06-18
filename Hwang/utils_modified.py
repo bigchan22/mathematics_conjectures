@@ -26,7 +26,9 @@ import optax
 import psutil
 import scipy.sparse as sp
 import seaborn as sns
-train_fraction = .8
+
+from feature_functions import *
+from training_info import *
 
 def random_feature(D):
     rand_feature = dict.fromkeys(D.nodes)

@@ -1,3 +1,24 @@
+import numpy as np
+import networkx as nx
+
+def random_feature(D):
+    rand_feature = dict.fromkeys(D.nodes)
+    for key in rand_feature.keys():
+        rand_feature[key] = np.random.rand()
+    return rand_feature
+
+def constant_feature(D):
+    const_feature = dict.fromkeys(D.nodes)
+    for key in const_feature.keys():
+        const_feature[key] = 1
+    return const_feature
+
+def numbering_feature(D):
+    num_feature = dict()
+    for n, node in enumerate(D.nodes):
+        num_feature[node] = n
+    return num_feature
+
 def get_sinks(D):
     return (node for node, out_dg in D.out_degree() if out_dg == 0)
 
