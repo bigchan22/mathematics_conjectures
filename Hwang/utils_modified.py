@@ -27,7 +27,6 @@ import psutil
 import scipy.sparse as sp
 import seaborn as sns
 
-from feature_functions import *
 from training_info import *
 
 def random_feature(D):
