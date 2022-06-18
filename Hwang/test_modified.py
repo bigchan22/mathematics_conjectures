@@ -32,6 +32,11 @@ feature_list = {
 
 label_size = {7: [0, 60, 36, 35, 28, 38, 58, 85]}
 
+
+DIR_PATH = '/root/Hwang/mathematics_conjectures/Hwang'
+GRAPH_DIR = os.path.join(DIR_PATH, f'Data/N_{N}')
+PARAM_DIR = os.path.join(DIR_PATH, 'Parameters')
+NUM_GRAPHS = len([f for f in os.listdir(GRAPH_DIR) if f.startswith("graph_")])
 PARAM_FILE = os.path.join(PARAM_DIR, f'parameters_{N}_{partition_part}_{num_layers}_{num_features}')
 for key in feature_list.keys():
     PARAM_FILE += f'_{key}'
