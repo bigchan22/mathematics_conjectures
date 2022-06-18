@@ -26,10 +26,6 @@ import psutil
 import scipy.sparse as sp
 import seaborn as sns
 
-DIR_PATH = '/root/Hwang/mathematics_conjectures/Hwang'
-GRAPH_DIR = os.path.join(DIR_PATH, 'Data')
-PARAM_DIR = os.path.join(DIR_PATH, 'Parameters')
-NUM_GRAPHS = len([f for f in os.listdir(GRAPH_DIR) if f.startswith("graph_")])
 train_fraction = .8
 
 def random_feature(D):
