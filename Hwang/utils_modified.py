@@ -291,8 +291,8 @@ def load_input_data(N=7, partition_part=1, feat_list=None, extended=True, label_
 
     return (
       InputData(features=features, rows_1=rows, columns_1=cols, rows_2=rows_clone, columns_2=cols_clone, labels=ys, root_nodes=root_nodes),
-      InputData(features=features_train, rows_1=rows_train, columns_1=cols_train, row_2=rows_clone_train, columns_2=cols_clone_train, labels=ys_train, root_nodes=root_nodes_train),
-      InputData(features=features_test, rows_1=rows_test, columns_1=cols_test, row_2=rows_clone_test, columns_2=cols_clone_test, labels=ys_test, root_nodes=root_nodes_test))
+      InputData(features=features_train, rows_1=rows_train, columns_1=cols_train, rows_2=rows_clone_train, columns_2=cols_clone_train, labels=ys_train, root_nodes=root_nodes_train),
+      InputData(features=features_test, rows_1=rows_test, columns_1=cols_test, rows_2=rows_clone_test, columns_2=cols_clone_test, labels=ys_test, root_nodes=root_nodes_test))
 
 
 
