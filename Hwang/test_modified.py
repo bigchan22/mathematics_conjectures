@@ -43,12 +43,17 @@ PARAM_FILE += '_v2.pickle'
 def compute_accuracies(params_to_evaluate, dataset, batch_size=100):
     total_correct = 0.0
     for i in range(0, len(dataset.features), batch_size):
-        b_features, b_rows, b_cols, b_ys, b_masks = batch(
-            dataset.features[i:i + batch_size], dataset.rows[i:i + batch_size],
-            dataset.columns[i:i + batch_size], dataset.labels[i:i + batch_size],
-            dataset.root_nodes[i:i + batch_size])
+        b_features, b_rows_1, b_cols_1, b_rows_2, b_cols_2, b_ys, b_masks = batch(
+            dataset.features[i:i + batch_size],
+            dataset.rows_1[i:i + batch_size],
+            dataset.columns_1[i:i + batch_size],
+            dataset.rows_2[i:i + batch_size],
+            dataset.columns_2[i:i + batch_size],
+            dataset.labels[i:i + batch_size],
+            dataset.root_nodes[i:i + batch_size],
+        )
 
-        accs = model.accuracy(params_to_evaluate, b_features, b_rows, b_cols, b_ys,
+        accs = model.accuracy(params_to_evaluate, b_features, b_rows_1, b_cols_1, b_rows_2, b_cols_2, b_ys,
                               b_masks)
         total_correct += accs * len(dataset.features[i:i + batch_size])
     return total_correct / len(dataset.features)
