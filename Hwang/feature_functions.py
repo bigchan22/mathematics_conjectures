@@ -1,3 +1,6 @@
+import numpy as np
+import networkx as nx
+
 def random_feature(D):
     rand_feature = dict.fromkeys(D.nodes)
     for key in rand_feature.keys():
