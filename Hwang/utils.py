@@ -26,7 +26,6 @@ import psutil
 import scipy.sparse as sp
 import seaborn as sns
 
-from feature_functions import *
 from training_info import *
 
 def convert_networkx_to_adjacency_input(graph):
