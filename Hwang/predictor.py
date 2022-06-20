@@ -110,10 +110,11 @@ def predictor_orbit(P, word):
     return result
 
 def answer(P, word):
+    n = len(P)
     equiv_words = get_all_equiv_words(P, word)
     pars = K_H(P, equiv_words)
     result = []
     for i in range(len(pars)):
         for j in range(int(pars[i])):
-            result.append(Partitions[str(N)][i])
+            result.append(Partitions[str(n)][i])
     return result, pars
