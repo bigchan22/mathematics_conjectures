@@ -83,10 +83,10 @@ def get_graph_datum(P, word):
     return feature, row_1, col_1, row_2, col_2
 
 def predictor(P, word):
-    feat, row, col = get_graph_datum(P, word)
+    feat, row_1, col_1, row_2, col_2 = get_graph_datum(P, word)
     partition = []
     for i in range(len(P), 0, -1):
-        _, lgts = models[i].net.apply(params[i], None, feat, row, col, 1, None)
+        _, lgts = models[i].net.apply(params[i], None, feat, feat, row_1, col_1, row_2, col_2, 1, None)
         mult = jnp.argmax(jax.nn.log_softmax(lgts)[0])
         for j in range(mult):
             partition.append(i)
