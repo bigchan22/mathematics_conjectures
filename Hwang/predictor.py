@@ -82,6 +82,15 @@ def get_graph_datum(P, word):
             col_2[i] = temp
     return feature, row_1, col_1, row_2, col_2
 
+def get_all_equiv_words(P, word):
+    queue = [word]
+    for word in queue:
+        word_list = get_equiv_words(P, word)
+        for eqv_word in word_list:
+            if not eqv_word in queue:
+                queue.append(eqv_word)
+    return queue
+
 def predictor(P, word):
     feat, row_1, col_1, row_2, col_2 = get_graph_datum(P, word)
     partition = []
@@ -93,7 +102,7 @@ def predictor(P, word):
     return partition
 
 def predictor_orbit(P, word):
-    equiv_words = get_equiv_words(P, word)
+    equiv_words = get_all_equiv_words(P, word)
     noDes = get_noDesWords(P, equiv_words)
     result = []
     for word in noDes:
@@ -101,7 +110,7 @@ def predictor_orbit(P, word):
     return result
 
 def answer(P, word):
-    equiv_words = get_equiv_words(P, word)
+    equiv_words = get_all_equiv_words(P, word)
     pars = K_H(P, equiv_words)
     result = []
     for i in range(len(pars)):
