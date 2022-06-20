@@ -41,7 +41,7 @@ for partition_part in range(1, N+1):
     PARAM_FILE = os.path.join(PARAM_DIR, f'parameters_{N}_{partition_part}_{num_layers}_{num_features}')
     for key in feature_list.keys():
         PARAM_FILE += f'_{key}'
-    PARAM_FILE += '.pickle'
+    PARAM_FILE += '_v2.pickle'
     with open(PARAM_FILE, 'rb') as f:
         trained_params.append(pickle.load(f))
     models.append(Model(num_layers=num_layers,
