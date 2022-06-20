@@ -1,5 +1,5 @@
-from calendar import EPOCH
-from utils import *
+from generate_data import *
+from utils_modified import *
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -26,6 +26,15 @@ feature_list = {
 
 label_size = {7: [0, 60, 36, 35, 28, 38, 58, 85]}
 
+with open("PartitionIndex.json", "r") as f:
+    PartitionIndex = json.load(f)
+with open("TransitionMatrix.json", "r") as f:
+    TMs = json.load(f)
+with open("Partitions.json", "r") as f:
+    Partitions = json.load(f)
+with open("PartitionMultiplicity.json", "r") as f:
+    PartitionMultiplicity = json.load(f)
+
 trained_params = [None]
 models = [None]
 for partition_part in range(1, N+1):
@@ -46,11 +55,6 @@ for partition_part in range(1, N+1):
                        message_relu=True,
                        with_bias=True))
 
-def is_compatible(P, a, b):
-    if P[a-1] < b or P[b-1] < a:
-        return True
-    return False
-
 def make_graph(P, word):
     n = len(P)
     row = []
@@ -67,11 +71,18 @@ def make_graph(P, word):
 def get_graph_datum(P, word):
     adj = make_graph(P, word)
     feature = np.ones((N, 1))
-    row = sp.coo_matrix(adj).row
-    col = sp.coo_matrix(adj).col
-    return feature, row, col
+    row_1 = sp.coo_matrix(adj).row
+    col_1 = sp.coo_matrix(adj).col
+    row_2 = sp.coo_matrix(adj).row
+    col_2 = sp.coo_matrix(adj).col
+    for i in range(len(row_2)):
+        if row_2[i] > col_2[i]:
+            temp = row_2[i]
+            row_2[i] = col_2[i]
+            col_2[i] = temp
+    return feature, row_1, col_1, row_2, col_2
 
-def predictor(P, word, params, models):
+def predictor(P, word):
     feat, row, col = get_graph_datum(P, word)
     partition = []
     for i in range(len(P), 0, -1):
@@ -80,3 +91,20 @@ def predictor(P, word, params, models):
         for j in range(mult):
             partition.append(i)
     return partition
+
+def predictor_orbit(P, word):
+    equiv_words = get_equiv_words(P, word)
+    noDes = get_noDesWords(P, equiv_words)
+    result = []
+    for word in noDes:
+        result.append(predictor(P, word))
+    return result
+
+def answer(P, word):
+    equiv_words = get_equiv_words(P, word)
+    pars = K_H(P, equiv_words)
+    result = []
+    for i in range(len(pars)):
+        for j in range(int(pars[i])):
+            result.append(Partitions[str(N)][i])
+    return result, pars
