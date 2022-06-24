@@ -178,17 +178,21 @@ def load_input_data(N=7, partition_part=1, feat_list=None, extended=True, label_
     for i in range(len(rows)):
         if i % 1000 == 0:
             print(f'Making {i}-th data...')
-        rows_1.append(np.empty((0,)))
-        cols_1.append(np.empty((0,)))
-        rows_2.append(np.empty((0,)))
-        cols_2.append(np.empty((0,)))
+        rows_1.append([])
+        cols_1.append([])
+        rows_2.append([])
+        cols_2.append([])
         for j in range(len(rows[i])):
             if rows[i][j] >= cols[i][j]:
-                rows_1[i] = np.append(rows_1, rows[i][j])
-                cols_1[i] = np.append(cols_1, cols[i][j])
+                rows_1[i].append(rows[i][j])
+                cols_1[i].append(cols[i][j])
             if rows[i][j] <= cols[i][j]:
-                rows_2[i] = np.append(rows_2, rows[i][j])
-                cols_2[i] = np.append(cols_2, cols[i][j])
+                rows_2[i].append(rows[i][j])
+                cols_2[i].append(cols[i][j])
+        rows_1 = np.array(rows_1, dtype=np.int32)
+        cols_1 = np.array(cols_1, dtype=np.int32)
+        rows_2 = np.array(rows_2, dtype=np.int32)
+        cols_2 = np.array(cols_2, dtype=np.int32)
     root_nodes = [get_root_node(col) for col in cols]
 
     features_test = features[:num_testing]
