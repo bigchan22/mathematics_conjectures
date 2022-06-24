@@ -1,5 +1,5 @@
 from calendar import EPOCH
-from utils_v2 import *
+from utils_v3 import *
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -10,11 +10,11 @@ warnings.filterwarnings('ignore')
 ################################
 
 # N = 7
-# partition_part = 2
+# partition_part = 3
 # num_layers = 5
 # num_features = 64
-# num_epochs = 128
-# batch_size = 150
+# num_epochs = 18
+# batch_size = 128
 # use_pretrained_weights = True
 # save_trained_weights = True
 
@@ -32,6 +32,11 @@ warnings.filterwarnings('ignore')
 
 # label_size = {7: [0, 60, 36, 35, 28, 38, 58, 85]}
 
+
+# DIR_PATH = '/root/Hwang/mathematics_conjectures/Hwang'
+# GRAPH_DIR = os.path.join(DIR_PATH, f'Data/N_{N}')
+# PARAM_DIR = os.path.join(DIR_PATH, 'Parameters')
+# NUM_GRAPHS = len([f for f in os.listdir(GRAPH_DIR) if f.startswith("graph_")])
 # PARAM_FILE = os.path.join(PARAM_DIR, f'parameters_{N}_{partition_part}_{num_layers}_{num_features}')
 # for key in feature_list.keys():
 #     PARAM_FILE += f'_{key}'
@@ -107,6 +112,10 @@ model = Model(
 loss_val_gr = jax.value_and_grad(model.loss)
 opt_init, opt_update = optax.adam(step_size)
 
+# In[28]:
+
+
+# @title Perform training / Load pretrained weights
 try:
     if use_pretrained_weights:
         try:
@@ -119,8 +128,10 @@ try:
         trained_params = model.net.init(
             jax.random.PRNGKey(42),
             features=train_dataset.features[0],
-            rows=train_dataset.rows[0],
-            cols=train_dataset.columns[0],
+            rows_1=train_dataset.rows_1[0],
+            cols_1=train_dataset.columns_1[0],
+            rows_2=train_dataset.rows_2[0],
+            cols_2=train_dataset.columns_2[0],
             batch_size=1,
             masks=train_dataset.features[0][np.newaxis, :, :])
     
@@ -181,31 +192,58 @@ try:
                 b_ys,
                 b_masks,
             )
+#             print(datetime.datetime.now(),
+#                   f"Iteration {i:5d} | Batch loss {curr_loss:.6f}",
+#                   f"Batch accuracy {accs:.2f}")
+
         print(datetime.datetime.now(), f"Epoch {ep:2d} completed!")
+
+        # Calculate accuracy across full dataset once per epoch
+        print(datetime.datetime.now(), f"Epoch {ep:2d}       | ", end="")
+        print_accuracies(trained_params, test_dataset, train_dataset, batch_size)
 except Exception as ex:
     print(f"The following exception occurs: {ex}")
 
+print('Baseline accuracy', get_baseline_accuracy(train_dataset.labels))
+
+# print('Computing saliences...')
+# salience_fn = jax.jit(jax.grad(lambda *args: jnp.sum(model.loss(*args)), 1))
+# salient_features_arr = get_salience_vectors(salience_fn, trained_params,
+#                                             full_dataset, batch_size)
+# saliencies = np.linalg.norm(
+#     np.concatenate(salient_features_arr, axis=0), axis=1)
+
+# print(f"max saliency = {max(saliencies)}")
+
+# cutoff = np.percentile(saliencies, 99)
+# print(f"cutoff 0.99 = {cutoff}")
+
+
+
+################################
 if save_trained_weights:
     with open(PARAM_FILE, 'wb') as f:
         pickle.dump(trained_params, f)
 
-# with open("logs.out", "a") as f:
-#     f.write("========================================================================\n")
-#     f.write(f'{datetime.datetime.now()} Training completed!\n')
-#     f.write(f"N, Partition part: {N}, {partition_part}\n")
-#     f.write(f"Number of layers: {num_layers}\n")
-#     f.write(f"Number of epochs: {ep}\n")
-#     f.write(f"Batch size: {batch_size}\n")
-#     f.write("List of features:\n")
-#     for feature in feature_list.keys():
-#         f.write(f"\t{feature}\n")
+with open("logs.out", "a") as f:
+    f.write("========================================================================\n")
+    f.write(f'{datetime.datetime.now()} Training completed!\n')
+    f.write(f"N, Partition part: {N}, {partition_part}\n")
+    f.write(f"Number of layers: {num_layers}\n")
+    f.write(f"Number of epochs: {ep}\n")
+    f.write(f"Batch size: {batch_size}\n")
+    f.write("List of features:\n")
+    for feature in feature_list.keys():
+        f.write(f"\t{feature}\n")
     
-#     train_accuracy, test_accuracy, combined_accuracy = print_accuracies(trained_params, test_dataset, train_dataset, batch_size)
-#     f.write("\n--Result--\n")
-#     f.write("                  Train |  Test | Combined\n")
-#     f.write(f'Baseline accuracy {get_baseline_accuracy(train_dataset.labels):.3f} | '
-#             f'{get_baseline_accuracy(test_dataset.labels):.3f} | '
-#             f'{get_baseline_accuracy(full_dataset.labels):.3f}\n')
-#     f.write(f'Model accuracy    {train_accuracy:.3f} | '
-#             f'{test_accuracy:.3f} | '
-#             f'{combined_accuracy:.3f}\n')
+    train_accuracy, test_accuracy, combined_accuracy = print_accuracies(trained_params, test_dataset, train_dataset, batch_size)
+    f.write("\n--Result--\n")
+    f.write("                  Train |  Test | Combined\n")
+    f.write(f'Baseline accuracy {get_baseline_accuracy(train_dataset.labels):.3f} | '
+            f'{get_baseline_accuracy(test_dataset.labels):.3f} | '
+            f'{get_baseline_accuracy(full_dataset.labels):.3f}\n')
+    f.write(f'Model accuracy    {train_accuracy:.3f} | '
+            f'{test_accuracy:.3f} | '
+            f'{combined_accuracy:.3f}\n')
+
+

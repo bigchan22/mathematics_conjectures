@@ -1,5 +1,5 @@
 from generate_data import *
-from utils_modified import *
+from utils_v2 import *
 
 import warnings
 warnings.filterwarnings('ignore')
