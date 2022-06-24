@@ -182,7 +182,10 @@ def load_input_data(N=7, partition_part=1, feat_list=None, extended=True, label_
     rows_2 = []
     cols_2 = []
     for i in range(len(rows)):
-        rows_1[i] = cols_1[i] = rows_2[i] = cols_2[i] = np.empty((0,))
+        rows_1.append(np.empty((0,)))
+        cols_1.append(np.empty((0,)))
+        rows_2.append(np.empty((0,)))
+        cols_2.append(np.empty((0,)))
         for j in range(len(rows[i])):
             if rows[i][j] >= cols[i][j]:
                 rows_1[i] = np.append(rows_1, rows[i][j])
