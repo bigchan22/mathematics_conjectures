@@ -94,8 +94,6 @@ full_dataset, train_dataset, test_dataset = load_input_data(N, partition_part, f
                                                             extended=True,
                                                             label_size=label_size)
 
-print("Finished making data!")
-
 # @title Network Setup
 
 num_classes = label_size[N][partition_part]
@@ -201,12 +199,12 @@ try:
         print(datetime.datetime.now(), f"Epoch {ep:2d} completed!")
 
         # Calculate accuracy across full dataset once per epoch
-        print(datetime.datetime.now(), f"Epoch {ep:2d}       | ", end="")
-        print_accuracies(trained_params, test_dataset, train_dataset, batch_size)
+        # print(datetime.datetime.now(), f"Epoch {ep:2d}       | ", end="")
+        # print_accuracies(trained_params, test_dataset, train_dataset, batch_size)
 except Exception as ex:
     print(f"The following exception occurs: {ex}")
 
-print('Baseline accuracy', get_baseline_accuracy(train_dataset.labels))
+# print('Baseline accuracy', get_baseline_accuracy(train_dataset.labels))
 
 # print('Computing saliences...')
 # salience_fn = jax.jit(jax.grad(lambda *args: jnp.sum(model.loss(*args)), 1))
