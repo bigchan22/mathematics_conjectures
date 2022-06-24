@@ -189,10 +189,10 @@ def load_input_data(N=7, partition_part=1, feat_list=None, extended=True, label_
             if rows[i][j] <= cols[i][j]:
                 rows_2[i].append(rows[i][j])
                 cols_2[i].append(cols[i][j])
-        rows_1 = np.array(rows_1, dtype=np.int32)
-        cols_1 = np.array(cols_1, dtype=np.int32)
-        rows_2 = np.array(rows_2, dtype=np.int32)
-        cols_2 = np.array(cols_2, dtype=np.int32)
+        rows_1 = np.array(rows_1, dtype=np.int8)
+        cols_1 = np.array(cols_1, dtype=np.int8)
+        rows_2 = np.array(rows_2, dtype=np.int8)
+        cols_2 = np.array(cols_2, dtype=np.int8)
     root_nodes = [get_root_node(col) for col in cols]
 
     features_test = features[:num_testing]
