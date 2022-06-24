@@ -139,8 +139,6 @@ def load_input_data(N=7, partition_part=1, feat_list=None, extended=True, label_
     # adjacencies = list(adjacencies)
     # ys = np.array(ys)
 
-    print("Making data...")
-
     num_training = int(len(ys) * train_fraction)
     num_testing = int(len(ys) * (1-train_fraction))
     
@@ -174,10 +172,7 @@ def load_input_data(N=7, partition_part=1, feat_list=None, extended=True, label_
     cols_1 = []
     rows_2 = []
     cols_2 = []
-    print(f'Total data number {len(rows)}')
     for i in range(len(rows)):
-        if i % 1000 == 0:
-            print(f'Making {i}-th data...')
         rows_1.append([])
         cols_1.append([])
         rows_2.append([])
