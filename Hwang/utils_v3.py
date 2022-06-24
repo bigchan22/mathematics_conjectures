@@ -61,7 +61,12 @@ def generate_graph_data(N, partition_part, feat_list):
     features = []
     adjacencies = []
 
+    cnt = 0
+
     for graph in iter_graph():
+        cnt += 1
+        if cnt % 1000 == 0:
+            print(f"{cnt}-th data loaded...")
 #         feat_dict = {
 # #             'in_centrality': nx.in_degree_centrality(graph),
 # #             'out_centrality': nx.out_degree_centrality(graph),
@@ -147,6 +152,8 @@ def load_input_data(N=7, partition_part=1, feat_list=None, extended=True, label_
     # features = list(features)
     # adjacencies = list(adjacencies)
     # ys = np.array(ys)
+
+    print("Making data...")
 
     num_training = int(len(ys) * train_fraction)
     num_testing = int(len(ys) * (1-train_fraction))

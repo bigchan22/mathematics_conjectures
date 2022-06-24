@@ -94,6 +94,8 @@ full_dataset, train_dataset, test_dataset = load_input_data(N, partition_part, f
                                                             extended=True,
                                                             label_size=label_size)
 
+print("Finished making data!")
+
 # @title Network Setup
 
 num_classes = label_size[N][partition_part]
