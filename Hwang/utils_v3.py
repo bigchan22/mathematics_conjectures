@@ -61,21 +61,7 @@ def generate_graph_data(N, partition_part, feat_list):
     features = []
     adjacencies = []
 
-    cnt = 0
-
     for graph in iter_graph():
-        cnt += 1
-        if cnt % 1000 == 0:
-            print(f"{cnt}-th data loaded...")
-#         feat_dict = {
-# #             'in_centrality': nx.in_degree_centrality(graph),
-# #             'out_centrality': nx.out_degree_centrality(graph),
-# #             'shortest_path_length': shortest_path_lengths(graph),
-# #             'longest_path_lengths': longest_path_lengths(graph),
-# #             'random_feature': random_feature(graph),
-#             'constant_feature': constant_feature(graph),
-# #             'numbering_feature': numbering_feature(graph),
-#         }
         feat_dict = dict()
         for key, feat in feat_list.items():
             feat_dict[key] = feat(graph)
@@ -188,7 +174,10 @@ def load_input_data(N=7, partition_part=1, feat_list=None, extended=True, label_
     cols_1 = []
     rows_2 = []
     cols_2 = []
+    print(f'Total data number {len(rows)}')
     for i in range(len(rows)):
+        if i % 1000 == 0:
+            print(f'Making {i}-th data...')
         rows_1.append(np.empty((0,)))
         cols_1.append(np.empty((0,)))
         rows_2.append(np.empty((0,)))
