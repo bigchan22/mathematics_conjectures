@@ -83,8 +83,10 @@ try:
         trained_params = model.net.init(
             jax.random.PRNGKey(42),
             features=train_dataset.features[0],
-            rows=train_dataset.rows[0],
-            cols=train_dataset.columns[0],
+            rows_1=train_dataset.rows_1[0],
+            cols_1=train_dataset.columns_1[0],
+            rows_2=train_dataset.rows_2[0],
+            cols_2=train_dataset.columns_2[0],
             batch_size=1,
             masks=train_dataset.features[0][np.newaxis, :, :])
     
