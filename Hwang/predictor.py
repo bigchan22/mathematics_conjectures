@@ -41,7 +41,7 @@ for partition_part in range(1, N+1):
     PARAM_FILE = os.path.join(PARAM_DIR, f'parameters_{N}_{partition_part}_{num_layers}_{num_features}')
     for key in feature_list.keys():
         PARAM_FILE += f'_{key}'
-    PARAM_FILE += '_v2.pickle'
+    PARAM_FILE += '_v3.pickle'
     with open(PARAM_FILE, 'rb') as f:
         trained_params.append(pickle.load(f))
     models.append(Model(num_layers=num_layers,
@@ -71,15 +71,23 @@ def make_graph(P, word):
 def get_graph_datum(P, word):
     D, adj = make_graph(P, word)
     feature = get_feature(nx.from_scipy_sparse_matrix(D))
-    row_1 = sp.coo_matrix(adj).row
-    col_1 = sp.coo_matrix(adj).col
-    row_2 = sp.coo_matrix(adj).row
-    col_2 = sp.coo_matrix(adj).col
-    for i in range(len(row_2)):
-        if row_2[i] > col_2[i]:
-            temp = row_2[i]
-            row_2[i] = col_2[i]
-            col_2[i] = temp
+    row = sp.coo_matrix(adj).row
+    col = sp.coo_matrix(adj).col
+    row_1 = []
+    col_1 = []
+    row_2 = []
+    col_2 = []
+    for i in range(len(row)):
+        if row[i] >= col[i]:
+            row_1.append(row[i])
+            col_1.append(col[i])
+        if row[i] <= col[i]:
+            row_2.append(row[i])
+            col_2.append(col[i])
+    row_1[i] = np.array(row_1[i], dtype=np.int8)
+    col_1[i] = np.array(col_1[i], dtype=np.int8)
+    row_2[i] = np.array(row_2[i], dtype=np.int8)
+    col_2[i] = np.array(col_2[i], dtype=np.int8)
     return feature, row_1, col_1, row_2, col_2
 
 def get_feature(graph):
