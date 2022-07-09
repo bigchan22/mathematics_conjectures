@@ -70,7 +70,7 @@ def make_graph(P, word):
 
 def get_graph_datum(P, word):
     D, adj = make_graph(P, word)
-    feature = get_feature(nx.from_scipy_sparse_matrix(D))
+    feature = get_feature(nx.from_scipy_sparse_matrix(D, create_using=nx.DiGraph))
     row = sp.coo_matrix(adj).row
     col = sp.coo_matrix(adj).col
     row_1 = []
