@@ -84,10 +84,10 @@ def get_graph_datum(P, word):
         if row[i] <= col[i]:
             row_2.append(row[i])
             col_2.append(col[i])
-    row_1[i] = np.array(row_1[i], dtype=np.int8)
-    col_1[i] = np.array(col_1[i], dtype=np.int8)
-    row_2[i] = np.array(row_2[i], dtype=np.int8)
-    col_2[i] = np.array(col_2[i], dtype=np.int8)
+    row_1 = np.array(row_1, dtype=np.int8)
+    col_1 = np.array(col_1, dtype=np.int8)
+    row_2 = np.array(row_2, dtype=np.int8)
+    col_2 = np.array(col_2, dtype=np.int8)
     return feature, row_1, col_1, row_2, col_2
 
 def get_feature(graph):
