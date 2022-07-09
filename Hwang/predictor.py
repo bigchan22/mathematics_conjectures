@@ -1,5 +1,5 @@
 from generate_data import *
-from utils_v2 import *
+from utils_v3 import *
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -9,22 +9,22 @@ warnings.filterwarnings('ignore')
 ####### Model information #######
 #################################
 
-N = 7
-partition_part = 6
-num_layers = 5
-num_features = 64
+# N = 7
+# partition_part = 6
+# num_layers = 5
+# num_features = 64
 
-feature_list = {
-#             'in_centrality': nx.in_degree_centrality,
-#             'out_centrality': nx.out_degree_centrality,
-#             'shortest_path_length': shortest_path_lengths,
-#             'longest_path_length': longest_path_lengths,
-#             'random_feature': random_feature,
-            'constant_feature': constant_feature,
-#             'numbering_feature': numbering_feature,
-        }
+# feature_list = {
+# #             'in_centrality': nx.in_degree_centrality,
+# #             'out_centrality': nx.out_degree_centrality,
+# #             'shortest_path_length': shortest_path_lengths,
+# #             'longest_path_length': longest_path_lengths,
+# #             'random_feature': random_feature,
+#             'constant_feature': constant_feature,
+# #             'numbering_feature': numbering_feature,
+#         }
 
-label_size = {7: [0, 60, 36, 35, 28, 38, 58, 85]}
+# label_size = {7: [0, 60, 36, 35, 28, 38, 58, 85]}
 
 with open("PartitionIndex.json", "r") as f:
     PartitionIndex = json.load(f)
@@ -62,15 +62,15 @@ def make_graph(P, word):
     data = []
     for i in range(1,n):
         for j in range(i):
-            if is_compatible(P, word[i], word[j]) == False:
+            if is_compatible(P, word[i], word[j]) == False and is_compatible(P, word[j], word[i]) == False:
                 row.append(word[i]-1)
                 col.append(word[j]-1)
                 data.append(1)
-    return sp.coo_matrix((data, (row,col)), shape=(n,n)) + sp.eye(n)
+    return sp.coo_matrix((data, (row,col)), shape=(n,n)), sp.coo_matrix((data, (row,col)), shape=(n,n)) + sp.eye(n)
 
 def get_graph_datum(P, word):
-    adj = make_graph(P, word)
-    feature = np.ones((N, 1))
+    D, adj = make_graph(P, word)
+    feature = get_feature(nx.from_scipy_sparse_matrix(D))
     row_1 = sp.coo_matrix(adj).row
     col_1 = sp.coo_matrix(adj).col
     row_2 = sp.coo_matrix(adj).row
@@ -81,6 +81,16 @@ def get_graph_datum(P, word):
             row_2[i] = col_2[i]
             col_2[i] = temp
     return feature, row_1, col_1, row_2, col_2
+
+def get_feature(graph):
+    feat_dict = dict()
+    for key, feat in feature_list.items():
+        feat_dict[key] = feat(graph)
+    curr_feature = np.zeros((len(graph), len(feat_dict)))
+    for n, node in enumerate(graph.nodes):
+        for i, (name, value) in enumerate(feat_dict.items()):
+            curr_feature[n, i] = value[node]
+    return curr_feature
 
 def get_all_equiv_words(P, word):
     queue = [word]
