@@ -29,7 +29,7 @@ import seaborn as sns
 
 from training_info import *
 
-jax.default_device()
+# print(jax.default_device())
 
 
 def convert_networkx_to_adjacency_input(graph):
@@ -297,14 +297,15 @@ class MPNN(hk.Module):
         self.message_relu = message_relu
         self.with_bias = with_bias
 
-        @jax.jit
+        # @jax.jit
+        @functools.partial(jax.jit, device=jax.devices()[0])
         def jax_coo_sum(rows, cols, msg_in, msg_out):
             msg_vect = msg_in[rows] + msg_out[cols]
             if message_relu:
                 msg_vect = jax.nn.relu(msg_vect)
             return jnp.zeros_like(msg_out).at[rows].add(msg_vect)
 
-        @jax.jit
+        @functools.partial(jax.jit, device=jax.devices()[0])
         def jax_coo_max(rows, cols, msg_in, msg_out):
             msg_vect = msg_in[rows] + msg_out[cols]
             if message_relu:
@@ -476,10 +477,11 @@ class Model:
     def net(self):
         return hk.transform(self._kl_net)
 
-    @functools.partial(jax.jit, device=jax.devices()[1] , static_argnums=(0,))
+    @functools.partial(jax.jit, device=jax.devices()[0] , static_argnums=(0,))
     def loss(self, params, features, rows_1, cols_1, rows_2, cols_2, ys, masks):
         _, lgts = self.net.apply(params, None, features, rows_1, cols_1, rows_2, cols_2, ys.shape[0],
                                     masks)
+        print("Loss!!!!!")
         print(jnp.mean(
             jax.nn.log_softmax(lgts) *
             jnp.squeeze(jax.nn.one_hot(ys, self._num_classes), 1)))
@@ -488,14 +490,14 @@ class Model:
             jax.nn.log_softmax(lgts) *
             jnp.squeeze(jax.nn.one_hot(ys, self._num_classes), 1))
 
-    @functools.partial(jax.jit, device=jax.devices()[1],static_argnums=(0,))
+    @functools.partial(jax.jit, device=jax.devices()[0],static_argnums=(0,))
     def accuracy(self, params, features, rows_1, cols_1, rows_2, cols_2, ys, masks):
         _, lgts = self.net.apply(params, None, features, rows_1, cols_1, rows_2, cols_2, ys.shape[0],
                                     masks)
         pred = jnp.argmax(lgts, axis=-1)
         true_vals = jnp.squeeze(ys, axis=1)
         acc = jnp.mean(pred == true_vals)
-        print(acc.device_buffer.device())
+        # print(acc.device_buffer.device())
         return acc
 
 def get_baseline_accuracy(labels):

@@ -25,7 +25,7 @@ label_size = {7: [0, 60, 36, 35, 28, 38, 58, 85]}
 step_size = 0.001
 train_fraction = .8
 
-DIR_PATH = '/root/Hwang/mathematics_conjectures/Hwang'
+DIR_PATH = '/Data/mathematics_conjectures'
 GRAPH_DIR = os.path.join(DIR_PATH, f'Data/N_{N}')
 PARAM_DIR = os.path.join(DIR_PATH, 'Parameters')
 NUM_GRAPHS = len([f for f in os.listdir(GRAPH_DIR) if f.startswith("graph_")])
