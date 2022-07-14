@@ -51,11 +51,11 @@ def compute_accuracies(model,params_to_evaluate, dataset, batch_size=100):
     return total_correct / len(dataset.features)
 
 
-def print_accuracies(params_to_evaluate, dataset_test, dataset_train, batch_size=100):
+def print_accuracies(model, params_to_evaluate, dataset_test, dataset_train, batch_size=100):
     train_accuracy = compute_accuracies(
-        params_to_evaluate, dataset=dataset_train, batch_size=batch_size)
+        model, params_to_evaluate, dataset=dataset_train, batch_size=batch_size)
     test_accuracy = compute_accuracies(
-        params_to_evaluate, dataset=dataset_test, batch_size=batch_size)
+        model, params_to_evaluate, dataset=dataset_test, batch_size=batch_size)
 
     combined_accuracy = np.average(
         [train_accuracy, test_accuracy],
@@ -66,5 +66,9 @@ def print_accuracies(params_to_evaluate, dataset_test, dataset_train, batch_size
           f'Combined accuracy: {combined_accuracy:.3f}')
     return train_accuracy, test_accuracy, combined_accuracy
 
-
+def print_test_accuracies(model, params_to_evaluate, dataset_test,batch_size=100):
+    test_accuracy = compute_accuracies(
+        model, params_to_evaluate, dataset=dataset_test, batch_size=batch_size)
+    print(f'Test accuracy: {test_accuracy:.3f} | ')
+    return  test_accuracy
 

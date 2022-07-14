@@ -6,7 +6,7 @@ partition_part = 1
 num_layers = 5
 num_features = 64
 num_epochs = 100
-batch_size = 128
+batch_size = 512
 use_pretrained_weights = True
 save_trained_weights = True
 

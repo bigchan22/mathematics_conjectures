@@ -6,11 +6,27 @@
       <list>
         <OpenedFileInfo>
           <option name="caretOffset" value="0" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/data_loader.py" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/test.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="723" />
+          <option name="caretOffset" value="395" />
           <option name="fileUrl" value="file://$PROJECT_DIR$/main.py" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="264" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/Model.py" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="6223" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/test_v3.py" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="3029" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/utils.py" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="0" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/training_info.py" />
         </OpenedFileInfo>
       </list>
     </option>

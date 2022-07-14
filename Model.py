@@ -237,20 +237,20 @@ class Model:
     def net(self):
         return hk.transform(self._kl_net)
 
-    @functools.partial(jax.jit, device=jax.devices()[0], static_argnums=(0,))
+    @functools.partial(jax.jit, static_argnums=(0,))
     def loss(self, params, features, rows_1, cols_1, rows_2, cols_2, ys, masks):
         _, lgts = self.net.apply(params, None, features, rows_1, cols_1, rows_2, cols_2, ys.shape[0],
                                  masks)
-        print("Loss!!!!!")
-        print(jnp.mean(
-            jax.nn.log_softmax(lgts) *
-            jnp.squeeze(jax.nn.one_hot(ys, self._num_classes), 1)))
+        # print("Loss!!!!!")
+        # print(jnp.mean(
+        #     jax.nn.log_softmax(lgts) *
+        #     jnp.squeeze(jax.nn.one_hot(ys, self._num_classes), 1)))
 
         return -jnp.mean(
             jax.nn.log_softmax(lgts) *
             jnp.squeeze(jax.nn.one_hot(ys, self._num_classes), 1))
 
-    @functools.partial(jax.jit, device=jax.devices()[0], static_argnums=(0,))
+    @functools.partial(jax.jit,  static_argnums=(0,))
     def accuracy(self, params, features, rows_1, cols_1, rows_2, cols_2, ys, masks):
         _, lgts = self.net.apply(params, None, features, rows_1, cols_1, rows_2, cols_2, ys.shape[0],
                                  masks)
