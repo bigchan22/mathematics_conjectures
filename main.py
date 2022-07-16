@@ -6,7 +6,7 @@ import optax
 import os
 import psutil, sys, gc
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 os.environ["XLA_PYTHON_CLIENT_ALLOCATOR"] = "platform"
 # import jax
 from training_info import *
@@ -15,23 +15,7 @@ from utils import print_test_accuracies
 from Model import Model, Direction, Reduction, jax
 from data_loader import load_input_data, batch
 
-# import warnings
-#
-# warnings.filterwarnings('ignore')
 
-def clear_caches():
-    print("clear cache")
-    process = psutil.Process()
-    if process.memory_info().vms > 4 * 2**30:  # >4GB memory usage
-        print("cache cleared")
-        for module_name, module in sys.modules.items():
-            if module_name.startswith("jax"):
-                for obj_name in dir(module):
-                    obj = getattr(module, obj_name)
-                    if hasattr(obj, "cache_clear"):
-                        obj.cache_clear()
-                        print(obj_name,"Cleared")
-        gc.collect()
 ################################
 # def train(params, opt_state, features, rows_1, cols_1, rows_2, cols_2, ys, masks):
 #     curr_loss, gradient = loss_val_gr(params, features, rows_1, cols_1, rows_2, cols_2, ys, masks)
@@ -83,22 +67,6 @@ if use_pretrained_weights:
 
 trained_opt_state = opt_init(trained_params)#22237 initial memory use
 for ep in range(1, num_epochs + 1):
-    # if ep % 2 == 0:
-    #     backend = jax.lib.xla_bridge.get_backend()
-    #     for buf in backend.live_buffers() : buf.delete()
-    #     print("OOm sholud be cleared")
-    #     model = Model(
-    #         num_layers=num_layers,
-    #         num_features=num_features,
-    #         num_classes=num_classes,
-    #         direction=Direction.BOTH,
-    #         reduction=Reduction.SUM,
-    #         apply_relu_activation=True,
-    #         use_mask=False,
-    #         share=False,
-    #         message_relu=True,
-    #         with_bias=True)
-    #     loss_val_gr = jax.value_and_grad(model.loss)
     tr_data = list(
         zip(
             train_dataset.features,
@@ -109,7 +77,6 @@ for ep in range(1, num_epochs + 1):
             train_dataset.labels,
             train_dataset.root_nodes,
         ))
-    # tr_data = [data for data in tr_data if len(data[0]) == 7]# oom 체크
     random.shuffle(tr_data)
 
     features_train, rows_1_train, cols_1_train, rows_2_train, cols_2_train, ys_train, root_nodes_train = zip(
@@ -122,7 +89,6 @@ for ep in range(1, num_epochs + 1):
     cols_2_train = list(cols_2_train)
     ys_train = np.array(ys_train)
     root_nodes_train = list(root_nodes_train)
-    # print(ys_train)
 
     for i in range(0, len(features_train), batch_size):
         b_features, b_rows_1, b_cols_1, b_rows_2, b_cols_2, b_ys, b_masks = batch(
@@ -144,13 +110,6 @@ for ep in range(1, num_epochs + 1):
         print(datetime.datetime.now(),
               f"Iteration {i:5d} | Batch loss {curr_loss:.6f}",
               f"Batch accuracy {accs:.2f}")
-        # if i > 2000:
-        #     break
-        #     clear_caches()
-    # clear_caches()
-
     print(datetime.datetime.now(), f"Epoch {ep:2d} completed!")
-
-    # Calculate accuracy across full dataset once per epoch
     print(datetime.datetime.now(), f"Epoch {ep:2d}       | ", end="")
     print_test_accuracies(model, trained_params,test_dataset, batch_size)
