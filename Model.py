@@ -121,6 +121,127 @@ class MPNN(hk.Module):
 
         return network_output
 
+class Model_list:
+
+    def __init__(
+            self,
+            *,
+            num_layers: int,
+            num_features: int,
+            num_classes: int,
+            size_graph: int,
+            direction: Direction,
+            reduction: Reduction,
+            apply_relu_activation: bool,
+            use_mask: bool,
+            share: bool,
+            message_relu: bool,
+            with_bias: bool,
+    ):
+        """Get the jax model function and associated functions.
+
+        Args:
+          num_layers: The number of layers in the GraphNet - equivalently the number
+            of propagation steps.
+          num_features: The dimension of the hidden layers / messages.
+          num_classes: The number of target classes.
+          direction: Edges to pass messages along, see Direction enum.
+          reduction: The reduction operation to be used to aggregate messages at
+            each node at each step. See Reduction enum.
+          apply_relu_activation: Whether to apply a relu at the end of each
+            propogration step.
+          use_mask: Boolean; should a masked prediction in central node be
+            performed?
+          share: Boolean; should the GNN layers be shared?
+          message_relu: Boolean; should a ReLU be used in the message function?
+          with_bias: Boolean; should the linear layers have bias?
+        """
+        self._num_layers = num_layers
+        self._size_graph = size_graph
+        self._num_features = num_features
+        self._num_classes = num_classes
+        self._direction = direction
+        self._reduction = reduction
+        self._apply_relu_activation = apply_relu_activation
+        self._use_mask = use_mask
+        self._share = share
+        self._message_relu = message_relu
+        self._with_bias = with_bias
+
+    def _kl_net(self, features, rows_1, cols_1,  batch_size, masks):
+        in_enc_1 = hk.Linear(self._num_features)
+
+        if self._apply_relu_activation:
+            activation_fn = jax.nn.relu
+        else:
+            activation_fn = lambda net: net
+
+        #         gnns = []
+
+        gnn = MPNN(
+            out_size=self._num_features,
+            mid_size=None,
+            direction=self._direction,
+            reduction=self._reduction,
+            activation=activation_fn,
+            message_relu=self._message_relu,
+            with_bias=self._with_bias,
+            residual=True)
+
+
+        out_enc = hk.Linear(self._num_classes, with_bias=self._with_bias)
+
+        hiddens = []
+        # hidden = in_enc(features)
+        print("features",features)
+        hidden_1 = in_enc_1(features)
+        print("hidden_1",hidden_1,hidden_1.shape)
+        # hiddens.append(jnp.reshape(hidden, (batch_size, -1, self._num_features)))
+        hidden_1 = gnn(hidden_1, rows_1, cols_1)
+        print("output of gnn", hidden_1,hidden_1.shape)
+        # hidden_1 = jnp.reshape(hidden_1, (batch_size, -1, self._num_features))
+        hidden_1 = jnp.reshape(hidden_1, (batch_size,-1 ,self._size_graph, self._num_features))
+        print("output of reshape", hidden_1,hidden_1.shape)
+        print("one batch", hidden_1[0])
+        hidden = hidden_1
+
+        if self._use_mask:
+            h_bar = jnp.sum(hidden * masks, axis=2)
+        else:
+            h_bar = jnp.max(hidden, axis=2)
+            h_bar = jnp.sum(h_bar, axis=1)
+        print("hbar", h_bar,h_bar.shape)
+        lgts = out_enc(h_bar)
+
+        return hiddens, lgts
+
+    @property
+    def net(self):
+        return hk.transform(self._kl_net)
+
+    @functools.partial(jax.jit, static_argnums=(0,))
+    def loss(self, params, features, rows_1, cols_1, rows_2, cols_2, ys, masks):
+        _, lgts = self.net.apply(params, None, features, rows_1, cols_1, rows_2, cols_2, ys.shape[0],
+                                 masks)
+        # print("Loss!!!!!")
+        # print(jnp.mean(
+        #     jax.nn.log_softmax(lgts) *
+        #     jnp.squeeze(jax.nn.one_hot(ys, self._num_classes), 1)))
+
+        return -jnp.mean(
+            jax.nn.log_softmax(lgts) *
+            jnp.squeeze(jax.nn.one_hot(ys, self._num_classes), 1))
+
+    @functools.partial(jax.jit,  static_argnums=(0,))
+    def accuracy(self, params, features, rows_1, cols_1, rows_2, cols_2, ys, masks):
+        _, lgts = self.net.apply(params, None, features, rows_1, cols_1, rows_2, cols_2, ys.shape[0],
+                                 masks)
+        pred = jnp.argmax(lgts, axis=-1)
+        true_vals = jnp.squeeze(ys, axis=1)
+        acc = jnp.mean(pred == true_vals)
+        # print(acc.device_buffer.device())
+        return acc
+
 
 class Model:
 
@@ -228,6 +349,148 @@ class Model:
             h_bar = jnp.sum(hidden * masks, axis=1)
         else:
             h_bar = jnp.max(hidden, axis=1)
+
+        lgts = out_enc(h_bar)
+
+        return hiddens, lgts
+
+    @property
+    def net(self):
+        return hk.transform(self._kl_net)
+
+    @functools.partial(jax.jit, static_argnums=(0,))
+    def loss(self, params, features, rows_1, cols_1, rows_2, cols_2, ys, masks):
+        _, lgts = self.net.apply(params, None, features, rows_1, cols_1, rows_2, cols_2, ys.shape[0],
+                                 masks)
+        # print("Loss!!!!!")
+        # print(jnp.mean(
+        #     jax.nn.log_softmax(lgts) *
+        #     jnp.squeeze(jax.nn.one_hot(ys, self._num_classes), 1)))
+
+        return -jnp.mean(
+            jax.nn.log_softmax(lgts) *
+            jnp.squeeze(jax.nn.one_hot(ys, self._num_classes), 1))
+
+    @functools.partial(jax.jit,  static_argnums=(0,))
+    def accuracy(self, params, features, rows_1, cols_1, rows_2, cols_2, ys, masks):
+        _, lgts = self.net.apply(params, None, features, rows_1, cols_1, rows_2, cols_2, ys.shape[0],
+                                 masks)
+        pred = jnp.argmax(lgts, axis=-1)
+        true_vals = jnp.squeeze(ys, axis=1)
+        acc = jnp.mean(pred == true_vals)
+        # print(acc.device_buffer.device())
+        return acc
+
+
+
+class Model_2:
+
+    def __init__(
+            self,
+            *,
+            num_layers: int,
+            num_features: int,
+            num_classes: int,
+            size_graph: int,
+            direction: Direction,
+            reduction: Reduction,
+            apply_relu_activation: bool,
+            use_mask: bool,
+            share: bool,
+            message_relu: bool,
+            with_bias: bool,
+    ):
+        """Get the jax model function and associated functions.
+
+        Args:
+          num_layers: The number of layers in the GraphNet - equivalently the number
+            of propagation steps.
+          num_features: The dimension of the hidden layers / messages.
+          num_classes: The number of target classes.
+          direction: Edges to pass messages along, see Direction enum.
+          reduction: The reduction operation to be used to aggregate messages at
+            each node at each step. See Reduction enum.
+          apply_relu_activation: Whether to apply a relu at the end of each
+            propogration step.
+          use_mask: Boolean; should a masked prediction in central node be
+            performed?
+          share: Boolean; should the GNN layers be shared?
+          message_relu: Boolean; should a ReLU be used in the message function?
+          with_bias: Boolean; should the linear layers have bias?
+        """
+        self._num_layers = num_layers
+        self._num_features = num_features
+        self._num_classes = num_classes
+        self._size_graph = size_graph
+        self._direction = direction
+        self._reduction = reduction
+        self._apply_relu_activation = apply_relu_activation
+        self._use_mask = use_mask
+        self._share = share
+        self._message_relu = message_relu
+        self._with_bias = with_bias
+
+    def _kl_net(self, features, rows_1, cols_1, rows_2, cols_2, batch_size, masks):
+        in_enc_1 = hk.Linear(self._num_features)
+        in_enc_2 = hk.Linear(self._num_features)
+
+        if self._apply_relu_activation:
+            activation_fn = jax.nn.relu
+        else:
+            activation_fn = lambda net: net
+
+        #         gnns = []
+        gnns_1 = []
+        gnns_2 = []
+        for i in range(self._num_layers):
+            if i == 0 or not self._share:
+                gnns_1.append(
+                    MPNN(
+                        out_size=self._num_features,
+                        mid_size=None,
+                        direction=self._direction,
+                        reduction=self._reduction,
+                        activation=activation_fn,
+                        message_relu=self._message_relu,
+                        with_bias=self._with_bias,
+                        residual=True))
+                gnns_2.append(
+                    MPNN(
+                        out_size=self._num_features,
+                        mid_size=None,
+                        direction=self._direction,
+                        reduction=self._reduction,
+                        activation=activation_fn,
+                        message_relu=self._message_relu,
+                        with_bias=self._with_bias,
+                        residual=True))
+            else:
+                #                 gnns.append(gnns[-1])
+                gnns_1.append(gnns_1[-1])
+                gnns_2.append(gnns_2[-1])
+
+        out_enc = hk.Linear(self._num_classes, with_bias=self._with_bias)
+
+        hiddens = []
+        # hidden = in_enc(features)
+        hidden_1 = in_enc_1(features)
+        hidden_2 = in_enc_2(features)
+        # hiddens.append(jnp.reshape(hidden, (batch_size, -1, self._num_features)))
+        for gnn in gnns_1:
+            hidden_1 = gnn(hidden_1, rows_1, cols_1)
+            # hiddens.append(jnp.reshape(hidden_1, (batch_size, -1, self._num_features)))
+        for gnn in gnns_2:
+            hidden_2 = gnn(hidden_2, rows_2, cols_2)
+            # hiddens.append(jnp.reshape(hidden_2, (batch_size, -1, self._num_features)))
+
+        # hidden_1 = jnp.reshape(hidden_1, (batch_size, -1, self._num_features))
+        hidden_1 = jnp.reshape(hidden_1, (batch_size,-1 ,self._size_graph, self._num_features))
+        # hidden_2 = jnp.reshape(hidden_2, (batch_size, -1, self._num_features))
+        hidden_2 = jnp.reshape(hidden_2, (batch_size,-1 ,self._size_graph, self._num_features))
+        hidden = hidden_1 + hidden_2
+
+        h_bar = jnp.max(hidden, axis=2)
+        h_bar = jnp.sum(h_bar, axis=1)
 
         lgts = out_enc(h_bar)
 
