@@ -1,0 +1,40 @@
+========================================================================
+2022-06-30 15:59:05.546721 Training completed!
+N, Partition part: 7, 1
+Number of layers: 5
+Number of epochs: 11
+Batch size: 128
+List of features:
+	constant_feature
+========================================================================
+2022-06-30 23:26:49.022059 Training completed!
+N, Partition part: 7, 1
+Number of layers: 5
+Number of epochs: 1
+Batch size: 128
+List of features:
+	constant_feature
+========================================================================
+2022-07-01 21:19:24.751546 Training completed!
+N, Partition part: 7, 1
+Number of layers: 5
+Number of epochs: 1
+Batch size: 128
+List of features:
+	constant_feature
+========================================================================
+2022-07-01 21:32:50.496005 Training completed!
+N, Partition part: 7, 1
+Number of layers: 5
+Number of epochs: 1
+Batch size: 128
+List of features:
+	constant_feature
+========================================================================
+2022-07-01 22:18:04.625583 Training completed!
+N, Partition part: 7, 1
+Number of layers: 5
+Number of epochs: 1
+Batch size: 128
+List of features:
+	constant_feature

@@ -164,7 +164,7 @@ def get_sink_number(P, word):
     for i in range(1, len(word)):
         chk = 0
         for j in range(i):
-            if is_compatible(P, word[i], word[j]) == 0:
+            if is_compatible(P, word[i], word[j]) == False:
                 chk = 1
                 break
         if chk == 0:
@@ -204,8 +204,8 @@ def make_sparse_matrix(P, word):
     for i in range(1,n):
         for j in range(i):
             if is_compatible(P, word[i], word[j]) == False:
-                row.append(word[i]-1)
-                col.append(word[j]-1)
+                row.append(word[j]-1)
+                col.append(word[i]-1)
                 data.append(1)
     return sp.coo_matrix((data, (row,col)), shape=(n,n))
 
@@ -215,7 +215,7 @@ def make_block_diagonal_sparse_matrix(P, word_list):
         mats.append(make_sparse_matrix(P, word))
     return sp.block_diag(mats)
 
-def generate_data(DIR_PATH, input_N=7, primitive = True, connected=False, extended=False, UPTO_N=False):
+def generate_data(DIR_PATH, input_N=7, primitive=True, connected=False, extended=False, UPTO_N=False):
     Ms = []
     XPs = []
     if UPTO_N:
