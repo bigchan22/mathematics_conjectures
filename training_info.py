@@ -2,7 +2,7 @@ import os
 from feature_functions import *
 
 N = 7
-partition_part = 1
+partition_parts = [i for i in range(1,N+1)]
 num_layers = 5
 num_features = 64
 num_epochs = 100

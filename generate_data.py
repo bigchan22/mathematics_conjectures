@@ -204,8 +204,8 @@ def make_sparse_matrix(P, word):
     for i in range(1,n):
         for j in range(i):
             if is_compatible(P, word[i], word[j]) == False:
-                row.append(word[j]-1)
-                col.append(word[i]-1)
+                row.append(word[i]-1)
+                col.append(word[j]-1)
                 data.append(1)
     return sp.coo_matrix((data, (row,col)), shape=(n,n))
 
@@ -286,12 +286,12 @@ def generate_data(DIR_PATH, input_N=7, primitive=True, connected=False, extended
     with open(DIR_PATH+f"XP_{input_N}_multiplicity.json", 'w') as f:
         json.dump(XP_mult_shuffle, f)
 
-with open("PartitionIndex.json", "r") as f:
+with open("./json/PartitionIndex.json", "r") as f:
     PartitionIndex = json.load(f)
-with open("TransitionMatrix.json", "r") as f:
+with open("./json/TransitionMatrix.json", "r") as f:
     TMs = json.load(f)
-with open("Partitions.json", "r") as f:
+with open("./json/Partitions.json", "r") as f:
     Partitions = json.load(f)
-with open("PartitionMultiplicity.json", "r") as f:
+with open("./json/PartitionMultiplicity.json", "r") as f:
     PartitionMultiplicity = json.load(f)
 

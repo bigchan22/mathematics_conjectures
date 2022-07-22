@@ -76,13 +76,13 @@ def iter_graph(GRAPH_DIR, NUM_GRAPHS):
             sp.load_npz(filename), create_using=nx.DiGraph)
 
 
-def generate_graph_data(N, partition_part, feat_list,GRAPH_DIR, NUM_GRAPHS):
+def generate_graph_data(N, partition_parts, feat_list, GRAPH_DIR, NUM_GRAPHS):
     """Generate dataset for training GraphNet model on KL data.
 
     This generates a dataset for training a GraphNet model.
 
     Args:
-    partition_part: The polynomial coefficient to use as the label.
+    partition_parts
 
     Returns:
     An GraphData instance with features, adjacencies and labels.
@@ -90,7 +90,7 @@ def generate_graph_data(N, partition_part, feat_list,GRAPH_DIR, NUM_GRAPHS):
     par_mults = read_partition_multiplicity(GRAPH_DIR,N)
 
     ys = np.array([par_mult for par_mult in par_mults])
-    ys = ys[:, partition_part - 1:partition_part]
+    ys = ys[:, [part-1 for part in partition_parts]]
 
     features = []
     adjacencies = []
@@ -116,7 +116,7 @@ def get_root_node(col):
     return np.bincount(col).argmin()
 
 
-def load_input_data(train_fraction, GRAPH_DIR, NUM_GRAPHS,N=7, partition_part=1, feat_list=None, extended=True, label_size=None):
+def load_input_data(train_fraction, GRAPH_DIR, NUM_GRAPHS, N, partition_parts=None, feat_list=None, extended=True, label_size=None):
     """Loads input data for the specified prediction problem.
 
     This loads a dataset that can be used with a GraphNet model. The Bruhat
@@ -126,15 +126,20 @@ def load_input_data(train_fraction, GRAPH_DIR, NUM_GRAPHS,N=7, partition_part=1,
     The datasets are cached, and only regenerated when not found on disk.
 
     Args:
-    partition_part: the part to use as the label.
+    partition_parts: the parts to use as the label.
     extended: True if training data to be extended
     Returns:
     Three InputData instances with features, rows, cols and labels. They are the
     full/train/test set respectively.
     """
 
-    print(f"Generating data for partition_part {partition_part}", flush=True)
-    graph_data = generate_graph_data(N, partition_part, feat_list,GRAPH_DIR, NUM_GRAPHS)
+    if type(partition_parts) == int:
+        partition_parts = [partition_parts]
+    if partition_parts == None:
+        partition_parts = [i for i in range(1,N+1)]
+
+    print(f"Generating data for partition_parts {partition_parts}", flush=True)
+    graph_data = generate_graph_data(N, partition_parts, feat_list, GRAPH_DIR, NUM_GRAPHS)
     features = graph_data.features
     adjacencies = graph_data.adjacencies
     ys = graph_data.labels
@@ -153,6 +158,7 @@ def load_input_data(train_fraction, GRAPH_DIR, NUM_GRAPHS,N=7, partition_part=1,
 
     num_training = int(len(ys) * train_fraction)
     num_testing = int(len(ys) * (1 - train_fraction))
+    max_label_size = np.max(np.array(label_size[N])[partition_parts])
 
     if extended:
         data_n = len(ys)
@@ -173,10 +179,10 @@ def load_input_data(train_fraction, GRAPH_DIR, NUM_GRAPHS,N=7, partition_part=1,
                 p_feature = np.append(p_feature, features[q], axis=0)
                 p_adjacencies.append(sp.coo_matrix(adjacencies[q]))
                 p_y += ys[q]
-            if label_size is None or p_y[0] <= label_size[N][partition_part]:
+            if label_size is None or np.max(p_y) <= max_label_size:
                 features.append(p_feature)
                 adjacencies.append(sp.csr_array(sp.block_diag(p_adjacencies)))
-                ys = np.append(ys, p_y.reshape(-1, 1), axis=0)
+                ys = np.append(ys, p_y.reshape(-1, len(p_y)), axis=0)
 
     rows = [sp.coo_matrix(a).row for a in adjacencies]
     cols = [sp.coo_matrix(a).col for a in adjacencies]

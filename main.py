@@ -25,10 +25,12 @@ import jax.numpy as jnp
 
 print("Loading input data...")
 full_dataset, train_dataset, test_dataset = load_input_data(train_fraction, GRAPH_DIR, NUM_GRAPHS,
-                                                            N, partition_part, feature_list,
+                                                            N, partition_parts, feature_list,
                                                             extended=True,
                                                             label_size=label_size)
-num_classes = label_size[N][partition_part]
+
+
+num_classes = np.max(np.array(label_size[N])[partition_parts])
 # model = Model(
 #     num_layers=num_layers,
 #     num_features=num_features,
@@ -64,7 +66,7 @@ if use_pretrained_weights:
     except:
         print("There is no trained parameters")
         use_pretrained_weights = False
-else:
+if use_pretrained_weights is False:
     print("Not using pretrained weights")
     trained_params = model.net.init(
         jax.random.PRNGKey(42),
@@ -111,7 +113,7 @@ for ep in range(1, num_epochs + 1):
             ys_train[i:i + batch_size],
             root_nodes_train[i:i + batch_size],
         )
-        b_masks = jnp.ones_like(b_masks)/7
+        b_masks = jnp.ones_like(b_masks) / N
         curr_loss, gradient = loss_val_gr(trained_params, b_features, b_rows_1, b_cols_1,
                                           b_rows_2, b_cols_2, b_ys, b_masks)
         updates, trained_opt_state = opt_update(gradient, trained_opt_state)
