@@ -188,7 +188,7 @@ def load_input_data(train_fraction, GRAPH_DIR, NUM_GRAPHS, N, partition_parts=No
             q = np.random.randint(num_testing, data_n)
             append_feat = features[p]
             append_feat = np.append(append_feat, features[q], axis=0)
-            append_adj = [sp.coo_matrix(adjacencies[p])], sp.coo_matrix(adjacencies[q])
+            append_adj = [sp.coo_matrix(adjacencies[p]), sp.coo_matrix(adjacencies[q])]
             append_ys = np.array(ys[p])
             append_ys += ys[q]
             if label_size is None or np.max(append_ys) <= max_label_size:
