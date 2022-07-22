@@ -162,27 +162,40 @@ def load_input_data(train_fraction, GRAPH_DIR, NUM_GRAPHS, N, partition_parts=No
 
     if extended:
         data_n = len(ys)
-        zero_pos = list(np.where(ys[num_testing:] == 0)[0])
-        nonzero_pos = list(np.where(ys[num_testing:] != 0)[0])
-        for p in zero_pos:
-            p += num_testing
-            p_feature = features[p]
-            p_adjacencies = [sp.coo_matrix(adjacencies[p])]
-            p_y = np.array(ys[p])
-            for i in range((p % 2) + 1):
-                q = random.choice(nonzero_pos) + num_testing
-                p_feature = np.append(p_feature, features[q], axis=0)
-                p_adjacencies.append(sp.coo_matrix(adjacencies[q]))
-                p_y += ys[q]
-            if p % 5 == 0:
-                q = np.random.randint(num_testing, data_n)
-                p_feature = np.append(p_feature, features[q], axis=0)
-                p_adjacencies.append(sp.coo_matrix(adjacencies[q]))
-                p_y += ys[q]
-            if label_size is None or np.max(p_y) <= max_label_size:
-                features.append(p_feature)
-                adjacencies.append(sp.csr_array(sp.block_diag(p_adjacencies)))
-                ys = np.append(ys, p_y.reshape(-1, len(p_y)), axis=0)
+        # zero_pos = list(np.where(ys[num_testing:] == 0)[0])
+        # nonzero_pos = list(np.where(ys[num_testing:] != 0)[0])
+        # for p in zero_pos:
+        #     p += num_testing
+        #     p_feature = features[p]
+        #     p_adjacencies = [sp.coo_matrix(adjacencies[p])]
+        #     p_y = np.array(ys[p])
+        #     for i in range((p % 2) + 1):
+        #         q = random.choice(nonzero_pos) + num_testing
+        #         p_feature = np.append(p_feature, features[q], axis=0)
+        #         p_adjacencies.append(sp.coo_matrix(adjacencies[q]))
+        #         p_y += ys[q]
+        #     if p % 5 == 0:
+        #         q = np.random.randint(num_testing, data_n)
+        #         p_feature = np.append(p_feature, features[q], axis=0)
+        #         p_adjacencies.append(sp.coo_matrix(adjacencies[q]))
+        #         p_y += ys[q]
+        #     if label_size is None or np.max(p_y) <= max_label_size:
+        #         features.append(p_feature)
+        #         adjacencies.append(sp.csr_array(sp.block_diag(p_adjacencies)))
+        #         ys = np.append(ys, p_y.reshape(-1, len(p_y)), axis=0)
+        for i in range(num_training):
+            p = np.random.randint(num_testing, data_n)
+            q = np.random.randint(num_testing, data_n)
+            append_feat = features[p]
+            append_feat = np.append(append_feat, features[q], axis=0)
+            append_adj = [sp.coo_matrix(adjacencies[p])], sp.coo_matrix(adjacencies[q])
+            append_ys = np.array(ys[p])
+            append_ys += ys[q]
+            if label_size is None or np.max(append_ys) <= max_label_size:
+                features.append(append_feat)
+                adjacencies.append(sp.csr_array(sp.block_diag(append_adj)))
+                ys = np.append(ys, append_ys.reshape(-1, len(append_ys)), axis=0)
+
 
     rows = [sp.coo_matrix(a).row for a in adjacencies]
     cols = [sp.coo_matrix(a).col for a in adjacencies]
