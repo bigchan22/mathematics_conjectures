@@ -7,8 +7,8 @@ num_layers = 5
 num_features = 64
 num_epochs = 100
 batch_size = 512
-use_pretrained_weights = True
-save_trained_weights = True
+use_pretrained_weights = False
+save_trained_weights = False
 
 feature_list = {
 #             'in_centrality': nx.in_degree_centrality,

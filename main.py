@@ -64,7 +64,7 @@ if use_pretrained_weights:
         with open(PARAM_FILE, 'rb') as f:
             trained_params = pickle.load(f)
     except:
-        print("There is no trained parameters")
+        print("There is no trained parameter")
         use_pretrained_weights = False
 if use_pretrained_weights is False:
     print("Not using pretrained weights")
@@ -127,3 +127,7 @@ for ep in range(1, num_epochs + 1):
     print(datetime.datetime.now(), f"Epoch {ep:2d} completed!")
     print(datetime.datetime.now(), f"Epoch {ep:2d}       | ", end="")
     print_test_accuracies(model, trained_params,test_dataset, batch_size)
+
+if save_trained_weights:
+    with open(PARAM_FILE, 'wb') as f:
+        pickle.dump(trained_params, f)
