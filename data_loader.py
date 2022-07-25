@@ -37,7 +37,8 @@ def batch(features, rows_1, cols_1, rows_2, cols_2, ys, root_nodes):
     b_cols_1 = []
     b_rows_2 = []
     b_cols_2 = []
-    b_ys = np.zeros((batch_size, 1))
+    # b_ys = np.zeros((batch_size, 1))
+    b_ys = ys
     b_masks = np.zeros((batch_size, max_features, 1))
     for i in range(batch_size):
         b_features[i, :features[i].shape[0], :] = features[i]
@@ -45,7 +46,7 @@ def batch(features, rows_1, cols_1, rows_2, cols_2, ys, root_nodes):
         b_cols_1.append(cols_1[i] + i * max_features)
         b_rows_2.append(rows_2[i] + i * max_features)
         b_cols_2.append(cols_2[i] + i * max_features)
-        b_ys[i, 0] = ys[i, 0]
+        # b_ys[i, 0] = ys[i, 0]
         root_node = root_nodes[i]
         b_masks[i, root_node, 0] = 1.0
 
