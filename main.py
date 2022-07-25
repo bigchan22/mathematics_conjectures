@@ -12,7 +12,7 @@ os.environ["XLA_PYTHON_CLIENT_ALLOCATOR"] = "platform"
 from training_info import *
 
 from utils import print_test_accuracies
-from Model import Model, Direction, Reduction, jax,Model_2
+from Model import Model, Direction, Reduction, jax,Model_2,Model_list
 from data_loader import load_input_data, batch
 import jax.numpy as jnp
 
@@ -42,7 +42,7 @@ num_classes = np.max(np.array(label_size[N])[partition_parts])
 #     share=False,
 #     message_relu=True,
 #     with_bias=True)
-model = Model_2(
+model = Model_list(
     num_layers=num_layers,
     num_features=num_features,
     num_classes=num_classes,
