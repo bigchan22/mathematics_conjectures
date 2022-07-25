@@ -215,10 +215,10 @@ def load_input_data(train_fraction, GRAPH_DIR, NUM_GRAPHS, N, partition_parts=No
             if rows[i][j] <= cols[i][j]:
                 rows_2[i].append(rows[i][j])
                 cols_2[i].append(cols[i][j])
-        rows_1[i] = np.array(rows_1[i], dtype=np.int8)
-        cols_1[i] = np.array(cols_1[i], dtype=np.int8)
-        rows_2[i] = np.array(rows_2[i], dtype=np.int8)
-        cols_2[i] = np.array(cols_2[i], dtype=np.int8)
+        rows_1[i] = np.array(rows_1[i], dtype=np.int16)
+        cols_1[i] = np.array(cols_1[i], dtype=np.int16)
+        rows_2[i] = np.array(rows_2[i], dtype=np.int16)
+        cols_2[i] = np.array(cols_2[i], dtype=np.int16)
     root_nodes = [get_root_node(col) for col in cols]
 
     features_test = features[:num_testing]
