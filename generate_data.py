@@ -215,12 +215,30 @@ def make_sparse_matrix_v2(P, word):     # make an adj. matrix of Hasse diagram
     col = []
     data = []
     for i in range(1,n):
+        a = b = None
         for j in reversed(range(i)):
             if is_compatible(P, word[i], word[j]) == False:
-                row.append(word[i]-1)
-                col.append(word[j]-1)
-                data.append(1)
-                break
+                if a == None and b == None:
+                    if word[j] < word[i]:
+                        a = word[j]
+                    else:
+                        b = word[j]
+                elif a == None and word[j] < word[i]:
+                    if is_compatible(P, word[j], b) == True:
+                        a = word[j]
+                        break
+                elif b == None and word[j] > word[i]:
+                    if is_compatible(P, a, word[j]) == True:
+                        b = word[j]
+                        break
+        if a != None:
+            row.append(word[i]-1)
+            col.append(a-1)
+            data.append(1)
+        if b != None:
+            row.append(word[i]-1)
+            col.append(b-1)
+            data.append(1)
     return sp.coo_matrix((data, (row,col)), shape=(n,n))
 
 def make_block_diagonal_sparse_matrix(P, word_list, Hasse_diagram):
