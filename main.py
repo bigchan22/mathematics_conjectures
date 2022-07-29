@@ -79,6 +79,7 @@ if use_pretrained_weights is False:
         masks=train_dataset.features[0][np.newaxis, :, :])
 
 trained_opt_state = opt_init(trained_params)#22237 initial memory use
+best_acc = None
 for ep in range(1, num_epochs + 1):
     tr_data = list(
         zip(
@@ -126,8 +127,9 @@ for ep in range(1, num_epochs + 1):
 #               f"Batch accuracy {accs:.2f}")
     print(datetime.datetime.now(), f"Epoch {ep:2d} completed!")
     print(datetime.datetime.now(), f"Epoch {ep:2d}       | ", end="")
-    print_test_accuracies(model, trained_params,test_dataset, batch_size)
-    if  ep % 10 == 0 :
-        if save_trained_weights:
+    test_acc = print_test_accuracies(model, trained_params,test_dataset, batch_size)
+    if best_acc == None or best_acc < test_acc:
+        best_acc = test_acc
+        if save_trained_weights and best_acc > 0.9:
             with open(PARAM_FILE, 'wb') as f:
                 pickle.dump(trained_params, f)
