@@ -121,13 +121,13 @@ for ep in range(1, num_epochs + 1):
 
         accs = model.accuracy(trained_params, b_features, b_rows_1, b_cols_1,
                               b_rows_2, b_cols_2, b_ys, b_masks, )#22512 ? 22427?22475?22523
-        print(datetime.datetime.now(),
-              f"Iteration {i:5d} | Batch loss {curr_loss:.6f}",
-              f"Batch accuracy {accs:.2f}")
+#         print(datetime.datetime.now(),
+#               f"Iteration {i:5d} | Batch loss {curr_loss:.6f}",
+#               f"Batch accuracy {accs:.2f}")
     print(datetime.datetime.now(), f"Epoch {ep:2d} completed!")
     print(datetime.datetime.now(), f"Epoch {ep:2d}       | ", end="")
     print_test_accuracies(model, trained_params,test_dataset, batch_size)
-
-if save_trained_weights:
-    with open(PARAM_FILE, 'wb') as f:
-        pickle.dump(trained_params, f)
+    if  ep % 10 == 0 :
+        if save_trained_weights:
+            with open(PARAM_FILE, 'wb') as f:
+                pickle.dump(trained_params, f)

@@ -3,18 +3,18 @@ from feature_functions import *
 
 N = 7
 partition_parts = [i for i in range(1,N+1)]
-num_layers = 5
-num_features = 64
-num_epochs = 100
+num_layers = 7
+num_features = 128
+num_epochs = 300
 batch_size = 512
-use_pretrained_weights = False
-save_trained_weights = False
+use_pretrained_weights = True
+save_trained_weights = True
 
 feature_list = {
-#             'in_centrality': nx.in_degree_centrality,
-#             'out_centrality': nx.out_degree_centrality,
-#             'shortest_path_length': shortest_path_lengths,
-#             'longest_path_length': longest_path_lengths,
+            'in_centrality': nx.in_degree_centrality,
+            'out_centrality': nx.out_degree_centrality,
+            'shortest_path_length': shortest_path_lengths,
+            'longest_path_length': longest_path_lengths,
 #             'random_feature': random_feature,
             'constant_feature': constant_feature,
 #             'numbering_feature': numbering_feature,
@@ -22,7 +22,7 @@ feature_list = {
 
 label_size = {7: [0, 60, 36, 35, 28, 38, 58, 85]}
 
-step_size = 0.001
+step_size = 0.0001
 train_fraction = .8
 
 DIR_PATH = '/root/Hwang/mathematics_conjectures'
