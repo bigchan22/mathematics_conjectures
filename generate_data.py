@@ -30,7 +30,7 @@ def iter_UIO(n, connected=False):
         k = 1
     else:
         k = 2
-    seq = [i+k for i in range(n)]          
+    seq = [i+k for i in range(n)]
     seq[n-1] = n
     seq[0] -= 1
     while seq[0] < n:
@@ -209,13 +209,30 @@ def make_sparse_matrix(P, word):
                 data.append(1)
     return sp.coo_matrix((data, (row,col)), shape=(n,n))
 
-def make_block_diagonal_sparse_matrix(P, word_list):
+def make_sparse_matrix_v2(P, word):     # make an adj. matrix of Hasse diagram
+    n = len(P)
+    row = []
+    col = []
+    data = []
+    for i in range(1,n):
+        for j in reversed(range(i)):
+            if is_compatible(P, word[i], word[j]) == False:
+                row.append(word[i]-1)
+                col.append(word[j]-1)
+                data.append(1)
+                break
+    return sp.coo_matrix((data, (row,col)), shape=(n,n))
+
+def make_block_diagonal_sparse_matrix(P, word_list, Hasse_diagram):
     mats = []
     for word in word_list:
-        mats.append(make_sparse_matrix(P, word))
+        if Hasse_diagram is False:
+            mats.append(make_sparse_matrix(P, word))
+        else:
+            mats.append(make_sparse_matrix_v2(P, word))
     return sp.block_diag(mats)
 
-def generate_data(DIR_PATH, input_N=7, primitive=True, connected=False, extended=False, UPTO_N=False):
+def generate_data(DIR_PATH, input_N=7, primitive=True, connected=False, extended=False, UPTO_N=False, Hasse_diagram=False):
     Ms = []
     XPs = []
     if UPTO_N:
@@ -231,12 +248,12 @@ def generate_data(DIR_PATH, input_N=7, primitive=True, connected=False, extended
                 noDes_words_along_sinks = cluster_words_along_sink(P, noDes)
                 pars_along_length = cluster_partitions_along_length(P, pars)
                 for word_list in noDes_words_along_sinks:
-                    Ms.append(make_block_diagonal_sparse_matrix(P, word_list))
+                    Ms.append(make_block_diagonal_sparse_matrix(P, word_list, Hasse_diagram))
                 for XP in pars_along_length:
                     temp = [int(val) for val in list(XP)]
                     XPs.append(temp)
                 if extended and len(noDes) > 1:
-                    Ms.append(make_block_diagonal_sparse_matrix(P, noDes))
+                    Ms.append(make_block_diagonal_sparse_matrix(P, noDes, Hasse_diagram))
                     temp = [int(val) for val in list(pars)]
                     XPs.append(temp)
         
