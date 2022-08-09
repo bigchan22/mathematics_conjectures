@@ -205,10 +205,12 @@ def load_input_data(train_fraction, GRAPH_DIR, NUM_GRAPHS, N, partition_parts=No
     rows_2 = []
     cols_2 = []
     for i in range(len(rows)):
-        rows_1[i] = np.array(rows[i], dtype=np.int16)
-        cols_1[i] = np.array(cols[i], dtype=np.int16)
+        rows_1.append(np.array(rows[i], dtype=np.int16))
+        cols_1.append(np.array(cols[i], dtype=np.int16))
         Hasse_rows, Hasse_cols = Hasse_diagram(rows[i], cols[i])
-        rows_2[i], cols_2[i] = go_right(Hasse_rows, Hasse_cols)
+        Hasse_rows, Hasse_cols = go_right(Hasse_rows, Hasse_cols)
+        rows_2.append(Hasse_rows)
+        cols_2.append(Hasse_cols)
     root_nodes = [get_root_node(col) for col in cols]
 
     features_test = features[:num_testing]
