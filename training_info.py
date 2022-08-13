@@ -4,9 +4,9 @@ from feature_functions import *
 N = 7
 partition_parts = [i for i in range(1,N+1)]
 num_layers = 7
-num_features = 128
+num_features = 192
 num_epochs = 300
-batch_size = 512
+batch_size = 192
 use_pretrained_weights = True
 save_trained_weights = True
 
@@ -22,7 +22,7 @@ feature_list = {
 
 label_size = {7: [0, 60, 36, 35, 28, 38, 58, 85]}
 
-step_size = 0.0001
+step_size = 0.0000003
 train_fraction = .8
 
 DIR_PATH = '/root/Hwang/mathematics_conjectures'
@@ -33,3 +33,4 @@ PARAM_FILE = os.path.join(PARAM_DIR, f'parameters_{N}_{partition_parts}_{num_lay
 for key in feature_list.keys():
     PARAM_FILE += f'_{key}'
 PARAM_FILE += '.pickle'
+
