@@ -3,6 +3,7 @@ from utils import *
 from data_loader import *
 from Model import *
 from training_info import *
+import pickle
 
 import warnings
 warnings.filterwarnings('ignore')
