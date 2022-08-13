@@ -29,13 +29,13 @@ warnings.filterwarnings('ignore')
 
 # label_size = {7: [0, 60, 36, 35, 28, 38, 58, 85]}
 
-with open("PartitionIndex.json", "r") as f:
+with open(os.path.join(JSON_DIR, 'PartitionIndex.json'), "r") as f:
     PartitionIndex = json.load(f)
-with open("TransitionMatrix.json", "r") as f:
+with open(os.path.join(JSON_DIR, 'TransitionMatrix.json'), "r") as f:
     TMs = json.load(f)
-with open("Partitions.json", "r") as f:
+with open(os.path.join(JSON_DIR, 'Partitions.json'), "r") as f:
     Partitions = json.load(f)
-with open("PartitionMultiplicity.json", "r") as f:
+with open(os.path.join(JSON_DIR, 'PartitionMultiplicity.json'), "r") as f:
     PartitionMultiplicity = json.load(f)
 
 # trained_params = [None]
