@@ -1,5 +1,8 @@
 from generate_data import *
-from utils_v3 import *
+from utils import *
+from data_loader import *
+from Model import *
+from training_info import *
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -35,25 +38,44 @@ with open("Partitions.json", "r") as f:
 with open("PartitionMultiplicity.json", "r") as f:
     PartitionMultiplicity = json.load(f)
 
-trained_params = [None]
-models = [None]
-for partition_part in range(1, N+1):
-    PARAM_FILE = os.path.join(PARAM_DIR, f'parameters_{N}_{partition_part}_{num_layers}_{num_features}')
-    for key in feature_list.keys():
-        PARAM_FILE += f'_{key}'
-    PARAM_FILE += '_v3.pickle'
-    with open(PARAM_FILE, 'rb') as f:
-        trained_params.append(pickle.load(f))
-    models.append(Model(num_layers=num_layers,
-                       num_features=num_features,
-                       num_classes=label_size[N][partition_part],
-                       direction=Direction.BOTH,
-                       reduction=Reduction.SUM,
-                       apply_relu_activation=True,
-                       use_mask=False,
-                       share=False,
-                       message_relu=True,
-                       with_bias=True))
+# trained_params = [None]
+# models = [None]
+# for partition_part in range(1, N+1):
+#     PARAM_FILE = os.path.join(PARAM_DIR, f'parameters_{N}_{partition_part}_{num_layers}_{num_features}')
+#     for key in feature_list.keys():
+#         PARAM_FILE += f'_{key}'
+#     PARAM_FILE += '.pickle'
+#     with open(PARAM_FILE, 'rb') as f:
+#         trained_params.append(pickle.load(f))
+#     models.append(Model_list(num_layers=num_layers,
+#                        num_features=num_features,
+#                        num_classes=label_size[N][partition_part],
+#                        direction=Direction.BOTH,
+#                        reduction=Reduction.SUM,
+#                        apply_relu_activation=True,
+#                        use_mask=False,
+#                        share=False,
+#                        message_relu=True,
+#                        with_bias=True))
+
+
+PARAM_FILE = os.path.join(PARAM_DIR, f'parameters_{N}_{partition_parts}_{num_layers}_{num_features}')
+for key in feature_list.keys():
+    PARAM_FILE += f'_{key}'
+PARAM_FILE += '.pickle'
+with open(PARAM_FILE, 'rb') as f:
+    trained_param = pickle.load(f)
+model = Model_list(num_layers=num_layers,
+                    num_features=num_features,
+                    num_classes=np.max(np.array(label_size[N])[partition_parts]),
+                    size_graph=N,
+                    direction=Direction.BOTH,
+                    reduction=Reduction.SUM,
+                    apply_relu_activation=True,
+                    use_mask=False,
+                    share=False,
+                    message_relu=True,
+                    with_bias=True)
 
 def make_graph(P, word):
     n = len(P)
@@ -73,21 +95,12 @@ def get_graph_datum(P, word):
     feature = get_feature(nx.from_scipy_sparse_matrix(D, create_using=nx.DiGraph))
     row = sp.coo_matrix(adj).row
     col = sp.coo_matrix(adj).col
-    row_1 = []
-    col_1 = []
-    row_2 = []
-    col_2 = []
-    for i in range(len(row)):
-        if row[i] >= col[i]:
-            row_1.append(row[i])
-            col_1.append(col[i])
-        if row[i] <= col[i]:
-            row_2.append(row[i])
-            col_2.append(col[i])
-    row_1 = np.array(row_1, dtype=np.int8)
-    col_1 = np.array(col_1, dtype=np.int8)
-    row_2 = np.array(row_2, dtype=np.int8)
-    col_2 = np.array(col_2, dtype=np.int8)
+    
+    row_1 = np.array(row, dtype=np.int16)
+    col_1 = np.array(col, dtype=np.int16)
+    Hasse_row, Hasse_col = Hasse_diagram(row, col)
+    row_2, col_2 = go_right(Hasse_row, Hasse_col)
+
     return feature, row_1, col_1, row_2, col_2
 
 def get_feature(graph):
@@ -111,13 +124,16 @@ def get_all_equiv_words(P, word):
 
 def predictor(P, word):
     feat, row_1, col_1, row_2, col_2 = get_graph_datum(P, word)
-    partition = []
-    for i in range(len(P), 0, -1):
-        _, lgts = models[i].net.apply(trained_params[i], None, feat, row_1, col_1, row_2, col_2, 1, None)
-        mult = jnp.argmax(jax.nn.log_softmax(lgts)[0])
-        for j in range(mult):
-            partition.append(i)
-    return partition
+
+    _, lgts = model.net.apply(trained_param, None, feat, row_1, col_1, row_2, col_2, 7, None)
+    return lgts
+    # partition = []
+    # for i in range(len(P), 0, -1):
+    #     _, lgts = models[i].net.apply(trained_params[i], None, feat, row_1, col_1, row_2, col_2, 1, None)
+    #     mult = jnp.argmax(jax.nn.log_softmax(lgts)[0])
+    #     for j in range(mult):
+    #         partition.append(i)
+    # return partition
 
 def predictor_orbit(P, word):
     equiv_words = get_all_equiv_words(P, word)

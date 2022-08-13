@@ -9,7 +9,7 @@
           <option name="fileUrl" value="file://$PROJECT_DIR$/test.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="405" />
+          <option name="caretOffset" value="416" />
           <option name="fileUrl" value="file://$PROJECT_DIR$/main.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
@@ -21,20 +21,20 @@
           <option name="fileUrl" value="file://$PROJECT_DIR$/utils.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="2262" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/data_loader.py" />
+          <option name="caretOffset" value="683" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/training_info.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="15915" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/Model.py" />
+          <option name="caretOffset" value="1443" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/data_loader.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
           <option name="caretOffset" value="142967" />
           <option name="fileUrl" value="file://$USER_HOME$/.cache/JetBrains/RemoteDev-PY/_root_Min_mathematics_conjectures/python_stubs/471880044/builtins.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="616" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/training_info.py" />
+          <option name="caretOffset" value="20269" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/Model.py" />
         </OpenedFileInfo>
       </list>
     </option>

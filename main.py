@@ -12,7 +12,7 @@ os.environ["XLA_PYTHON_CLIENT_ALLOCATOR"] = "platform"
 from training_info import *
 
 from utils import print_test_accuracies
-from Model import Model, Direction, Reduction, jax,Model_2
+from Model import Model, Direction, Reduction, jax,Model_2,Model_list
 from data_loader import load_input_data, batch
 import jax.numpy as jnp
 
@@ -42,7 +42,7 @@ num_classes = np.max(np.array(label_size[N])[partition_parts])
 #     share=False,
 #     message_relu=True,
 #     with_bias=True)
-model = Model_2(
+model = Model_list(
     num_layers=num_layers,
     num_features=num_features,
     num_classes=num_classes,
@@ -64,7 +64,7 @@ if use_pretrained_weights:
         with open(PARAM_FILE, 'rb') as f:
             trained_params = pickle.load(f)
     except:
-        print("There is no trained parameters")
+        print("There is no trained parameter")
         use_pretrained_weights = False
 if use_pretrained_weights is False:
     print("Not using pretrained weights")
@@ -79,6 +79,7 @@ if use_pretrained_weights is False:
         masks=train_dataset.features[0][np.newaxis, :, :])
 
 trained_opt_state = opt_init(trained_params)#22237 initial memory use
+best_acc = None
 for ep in range(1, num_epochs + 1):
     tr_data = list(
         zip(
@@ -121,9 +122,14 @@ for ep in range(1, num_epochs + 1):
 
         accs = model.accuracy(trained_params, b_features, b_rows_1, b_cols_1,
                               b_rows_2, b_cols_2, b_ys, b_masks, )#22512 ? 22427?22475?22523
-        print(datetime.datetime.now(),
-              f"Iteration {i:5d} | Batch loss {curr_loss:.6f}",
-              f"Batch accuracy {accs:.2f}")
+#         print(datetime.datetime.now(),
+#               f"Iteration {i:5d} | Batch loss {curr_loss:.6f}",
+#               f"Batch accuracy {accs:.2f}")
     print(datetime.datetime.now(), f"Epoch {ep:2d} completed!")
     print(datetime.datetime.now(), f"Epoch {ep:2d}       | ", end="")
-    print_test_accuracies(model, trained_params,test_dataset, batch_size)
+    test_acc = print_test_accuracies(model, trained_params,test_dataset, batch_size)
+    if best_acc == None or best_acc < test_acc:
+        best_acc = test_acc
+        if save_trained_weights and best_acc > 0.9:
+            with open(PARAM_FILE, 'wb') as f:
+                pickle.dump(trained_params, f)
