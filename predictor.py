@@ -127,7 +127,13 @@ def predictor(P, word):
     feat, row_1, col_1, row_2, col_2 = get_graph_datum(P, word)
 
     _, lgts = model.net.apply(trained_param, None, feat, row_1, col_1, row_2, col_2, 7, None)
-    return lgts
+    partition = []
+    for i in range(len(P), 0, -1):
+        mult = jnp.argmax(lgts[0][i])
+        for j in range(mult):
+            partition.append(i)
+    return partition
+
     # partition = []
     # for i in range(len(P), 0, -1):
     #     _, lgts = models[i].net.apply(trained_params[i], None, feat, row_1, col_1, row_2, col_2, 1, None)
