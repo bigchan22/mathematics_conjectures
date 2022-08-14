@@ -43,6 +43,12 @@ def shortest_path_lengths(D):
                 shortest_lengths[node] = length
     return shortest_lengths
 
+def normalized_shortest_path_lengths(D):
+    norm_short_feature = shortest_path_lengths(D)
+    for key in norm_short_feature.keys():
+        norm_short_feature[key] /= 6
+    return norm_short_feature
+
 def longest_path_length_to_target(D, target):
     dist = dict.fromkeys(D.nodes, -float('inf'))
     dist[target] = 0
@@ -61,3 +67,9 @@ def longest_path_lengths(D):
             if longest_lengths[node] < length:
                 longest_lengths[node] = length
     return longest_lengths
+
+def normalized_longest_path_lengths(D):
+    norm_long_feature = longest_path_lengths(D)
+    for key in norm_long_feature.keys():
+        norm_long_feature[key] /= 6
+    return norm_long_feature
