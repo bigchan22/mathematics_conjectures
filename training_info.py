@@ -11,8 +11,10 @@ use_pretrained_weights = True
 save_trained_weights = True
 
 feature_list = {
-            'in_centrality': nx.in_degree_centrality,
-            'out_centrality': nx.out_degree_centrality,
+            'in_centrality': in_centrality_with_fixed_N,
+            'out_centrality': out_centrality_with_fixed_N,
+            # 'in_centrality': nx.in_degree_centrality,
+            # 'out_centrality': nx.out_degree_centrality,
             'shortest_path_length': shortest_path_lengths,
             'longest_path_length': longest_path_lengths,
 #             'random_feature': random_feature,
