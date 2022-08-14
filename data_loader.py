@@ -266,7 +266,7 @@ def go_left(Hasse_rows, Hasse_cols):
     bincnt = np.bincount(Hasse_rows)
     left_rows = []
     left_cols = []
-    for i in range(max(Hasse_rows)):
+    for i in range(max(Hasse_rows)+1):
         for p in list(np.where(Hasse_rows==i)[0]):
             if bincnt[i] < 3 or Hasse_cols[p] <= i:
                 left_rows.append(Hasse_rows[p])
@@ -277,7 +277,7 @@ def go_right(Hasse_rows, Hasse_cols):
     bincnt = np.bincount(Hasse_rows)
     right_rows = []
     right_cols = []
-    for i in range(max(Hasse_rows)):
+    for i in range(max(Hasse_rows)+1):
         for p in list(np.where(Hasse_rows==i)[0]):
             if bincnt[i] < 3 or Hasse_cols[p] >= i:
                 right_rows.append(Hasse_rows[p])
