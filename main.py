@@ -7,7 +7,8 @@ import os
 # import psutil, sys, gc
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
-os.environ["XLA_PYTHON_CLIENT_ALLOCATOR"] = "platform"
+#os.environ["XLA_PYTHON_CLIENT_ALLOCATOR"] = "platform"
+os.environ["XLA_PYTHON_CLIENT_PREALLOCATE"] = "false"
 # import jax
 from training_info import *
 

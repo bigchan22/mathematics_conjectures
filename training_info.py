@@ -4,9 +4,9 @@ from feature_functions import *
 N = 7
 partition_parts = [i for i in range(1,N+1)]
 num_layers = 7
-num_features = 128
+num_features = 256
 num_epochs = 300
-batch_size = 512
+batch_size = 256
 use_pretrained_weights = True
 save_trained_weights = True
 
