@@ -2,3 +2,4 @@ Hwang/Data
 *.ipynb
 *.pyc
 ./idea/
+*.npz
