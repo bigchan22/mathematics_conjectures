@@ -205,21 +205,12 @@ def load_input_data(train_fraction, GRAPH_DIR, NUM_GRAPHS, N, partition_parts=No
     rows_2 = []
     cols_2 = []
     for i in range(len(rows)):
-        rows_1.append([])
-        cols_1.append([])
-        rows_2.append([])
-        cols_2.append([])
-        for j in range(len(rows[i])):
-            if rows[i][j] >= cols[i][j]:
-                rows_1[i].append(rows[i][j])
-                cols_1[i].append(cols[i][j])
-            if rows[i][j] <= cols[i][j]:
-                rows_2[i].append(rows[i][j])
-                cols_2[i].append(cols[i][j])
-        rows_1[i] = np.array(rows_1[i], dtype=np.int16)
-        cols_1[i] = np.array(cols_1[i], dtype=np.int16)
-        rows_2[i] = np.array(rows_2[i], dtype=np.int16)
-        cols_2[i] = np.array(cols_2[i], dtype=np.int16)
+        rows_1.append(np.array(rows[i], dtype=np.int16))
+        cols_1.append(np.array(cols[i], dtype=np.int16))
+        Hasse_rows, Hasse_cols = Hasse_diagram(rows[i], cols[i])
+        Hasse_rows, Hasse_cols = go_right(Hasse_rows, Hasse_cols)
+        rows_2.append(Hasse_rows)
+        cols_2.append(Hasse_cols)
     root_nodes = [get_root_node(col) for col in cols]
 
     features_test = features[:num_testing]
@@ -245,3 +236,50 @@ def load_input_data(train_fraction, GRAPH_DIR, NUM_GRAPHS, N, partition_parts=No
                   columns_2=cols_2_train, labels=ys_train, root_nodes=root_nodes_train),
         InputData(features=features_test, rows_1=rows_1_test, columns_1=cols_1_test, rows_2=rows_2_test,
                   columns_2=cols_2_test, labels=ys_test, root_nodes=root_nodes_test))
+
+def Hasse_diagram(rows, cols):
+    Hasse_rows = []
+    Hasse_cols = []
+    for i in range(len(rows)):
+        if rows[i] == cols[i]:
+            Hasse_rows.append(rows[i])
+            Hasse_cols.append(cols[i])
+            continue
+        chk = 0
+        for j in list(np.where(rows==rows[i])[0]):
+            if j == i or rows[j] == cols[j]:
+                continue
+            for k in list(np.where(cols==cols[i])[0]):
+                if k == i or rows[k] == cols[k]:
+                    continue
+                if cols[j] == rows[k]:
+                    chk = 1
+                    break
+            if chk == 1:
+                break
+        if chk == 0:
+            Hasse_rows.append(rows[i])
+            Hasse_cols.append(cols[i])
+    return np.array(Hasse_rows, dtype=np.int16), np.array(Hasse_cols, dtype=np.int16)
+
+def go_left(Hasse_rows, Hasse_cols):
+    bincnt = np.bincount(Hasse_rows)
+    left_rows = []
+    left_cols = []
+    for i in range(max(Hasse_rows)+1):
+        for p in list(np.where(Hasse_rows==i)[0]):
+            if bincnt[i] < 3 or Hasse_cols[p] <= i:
+                left_rows.append(Hasse_rows[p])
+                left_cols.append(Hasse_cols[p])
+    return np.array(left_rows, dtype=np.int16), np.array(left_cols, dtype=np.int16)
+
+def go_right(Hasse_rows, Hasse_cols):
+    bincnt = np.bincount(Hasse_rows)
+    right_rows = []
+    right_cols = []
+    for i in range(max(Hasse_rows)+1):
+        for p in list(np.where(Hasse_rows==i)[0]):
+            if bincnt[i] < 3 or Hasse_cols[p] >= i:
+                right_rows.append(Hasse_rows[p])
+                right_cols.append(Hasse_cols[p])
+    return np.array(right_rows, dtype=np.int16), np.array(right_cols, dtype=np.int16)

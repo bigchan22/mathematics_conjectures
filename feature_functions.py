@@ -1,6 +1,18 @@
 import numpy as np
 import networkx as nx
 
+def in_centrality_with_fixed_N(D):
+    in_cent_feature = dict.fromkeys(D.nodes)
+    for key in in_cent_feature.keys():
+        in_cent_feature[key] = D.in_degree(key) / 6
+    return in_cent_feature
+
+def out_centrality_with_fixed_N(D):
+    out_cent_feature = dict.fromkeys(D.nodes)
+    for key in out_cent_feature.keys():
+        out_cent_feature[key] = D.out_degree(key) / 6
+    return out_cent_feature
+
 def random_feature(D):
     rand_feature = dict.fromkeys(D.nodes)
     for key in rand_feature.keys():
@@ -31,6 +43,12 @@ def shortest_path_lengths(D):
                 shortest_lengths[node] = length
     return shortest_lengths
 
+def normalized_shortest_path_lengths(D):
+    norm_short_feature = shortest_path_lengths(D)
+    for key in norm_short_feature.keys():
+        norm_short_feature[key] /= 6
+    return norm_short_feature
+
 def longest_path_length_to_target(D, target):
     dist = dict.fromkeys(D.nodes, -float('inf'))
     dist[target] = 0
@@ -49,3 +67,9 @@ def longest_path_lengths(D):
             if longest_lengths[node] < length:
                 longest_lengths[node] = length
     return longest_lengths
+
+def normalized_longest_path_lengths(D):
+    norm_long_feature = longest_path_lengths(D)
+    for key in norm_long_feature.keys():
+        norm_long_feature[key] /= 6
+    return norm_long_feature
