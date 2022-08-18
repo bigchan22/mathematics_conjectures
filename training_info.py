@@ -13,20 +13,20 @@ save_trained_weights = True
 feature_list = {
             'in_centrality': in_centrality_with_fixed_N,
             'out_centrality': out_centrality_with_fixed_N,
-#             'shortest_path_length': normalized_shortest_path_lengths,
-#             'longest_path_length': normalized_longest_path_lengths,
+            'shortest_path_length': normalized_shortest_path_lengths,
+            'longest_path_length': normalized_longest_path_lengths,
             # 'in_centrality': nx.in_degree_centrality,
             # 'out_centrality': nx.out_degree_centrality,
             # 'shortest_path_length': shortest_path_lengths,
             # 'longest_path_length': longest_path_lengths,
 #             'random_feature': random_feature,
-#             'constant_feature': constant_feature,
+            'constant_feature': constant_feature,
 #             'numbering_feature': numbering_feature,
         }
 
 label_size = {7: [0, 60, 36, 35, 28, 38, 58, 85]}
 
-step_size = 0.0005
+step_size = 0.00005
 train_fraction = .8
 
 DIR_PATH = '/root/Hwang/mathematics_conjectures'
