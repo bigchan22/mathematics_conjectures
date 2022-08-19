@@ -26,7 +26,7 @@ feature_list = {
 
 label_size = {7: [0, 60, 36, 35, 28, 38, 58, 85]}
 
-step_size = 0.00005
+step_size = 0.000003
 train_fraction = .8
 
 DIR_PATH = '/root/Hwang/mathematics_conjectures'
