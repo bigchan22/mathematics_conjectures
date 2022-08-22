@@ -28,10 +28,13 @@ class InputData:
     root_nodes: Sequence[int]
 
 
-def batch(features, rows_1, cols_1, rows_2, cols_2, ys, root_nodes):
+def batch(features, rows_1, cols_1, rows_2, cols_2, ys, root_nodes,max_features=None):
     """Converts a list of training examples into a batched single graph."""
     batch_size = len(features)
-    max_features = max(f.shape[0] for f in features)
+    if max_features is None:
+        max_features = max(f.shape[0] for f in features)+1
+#     max_features = max(f.shape[0] for f in features)
+    print(max_features)
     b_features = np.zeros((batch_size, max_features, features[0].shape[1]))
     b_rows_1 = []
     b_cols_1 = []

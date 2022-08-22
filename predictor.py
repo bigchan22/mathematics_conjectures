@@ -125,10 +125,10 @@ def get_all_equiv_words(P, word):
 
 def predictor(P, word):
     feat, row_1, col_1, row_2, col_2 = get_graph_datum(P, word)
-
+    print(PARAM_FILE)
     _, lgts = model.net.apply(trained_param, None, feat, row_1, col_1, row_2, col_2, 1, None)
     print(lgts.shape)
-    print(lgts)
+#     print(lgts)
     print(jnp.argmax(lgts, axis=-1))
     partition = []
     for i in range(0, len(P)):

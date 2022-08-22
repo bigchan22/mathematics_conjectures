@@ -6,7 +6,7 @@ import optax
 import os
 # import psutil, sys, gc
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 #os.environ["XLA_PYTHON_CLIENT_ALLOCATOR"] = "platform"
 os.environ["XLA_PYTHON_CLIENT_PREALLOCATE"] = "false"
 # import jax
@@ -62,6 +62,7 @@ opt_init, opt_update = optax.adam(step_size)
 if use_pretrained_weights:
     try:
         print("Using pretrained weights")
+        print(PARAM_FILE)
         with open(PARAM_FILE, 'rb') as f:
             trained_params = pickle.load(f)
     except:
