@@ -37,5 +37,5 @@ NUM_GRAPHS = len([f for f in os.listdir(GRAPH_DIR) if f.startswith("graph_")])
 PARAM_FILE = os.path.join(PARAM_DIR, f'parameters_{N}_{partition_parts}_{num_layers}_{num_features}')
 for key in feature_list.keys():
     PARAM_FILE += f'_{key}'
-PARAM_FILE += '.pickle'
+PARAM_FILE += 'maxed.pickle'
 
