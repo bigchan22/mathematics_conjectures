@@ -1,0 +1,98 @@
+<frozen importlib._bootstrap>:228: RuntimeWarning: scipy._lib.messagestream.MessageStream size changed, may indicate binary incompatibility. Expected 56 from C header, got 64 from PyObject
+Loading input data...
+Generating data for partition_parts [1, 2, 3, 4, 5, 6, 7]
+Using pretrained weights
+/root/Hwang/mathematics_conjectures/Parameters/parameters_7_[1, 2, 3, 4, 5, 6, 7]_7_256_in_centrality_out_centrality_shortest_path_length_longest_path_length_constant_feature_min2.pickle
+0.0
+accs: 0.9213992
+2022-08-29 17:21:33.467536 Epoch  1 completed!
+2022-08-29 17:21:33.467586 Epoch  1       | Test accuracy: 0.938 | 
+0.0
+accs: 0.9326486
+2022-08-29 17:28:49.551603 Epoch  2 completed!
+2022-08-29 17:28:49.551626 Epoch  2       | Test accuracy: 0.942 | 
+0.0
+accs: 0.93316543
+2022-08-29 17:35:57.259631 Epoch  3 completed!
+2022-08-29 17:35:57.259655 Epoch  3       | Test accuracy: 0.943 | 
+0.0
+accs: 0.9397448
+2022-08-29 17:43:04.136410 Epoch  4 completed!
+2022-08-29 17:43:04.136448 Epoch  4       | Test accuracy: 0.942 | 
+0.0
+accs: 0.9403325
+2022-08-29 17:50:17.692425 Epoch  5 completed!
+2022-08-29 17:50:17.692462 Epoch  5       | Test accuracy: 0.953 | 
+0.0
+accs: 0.94690067
+2022-08-29 17:57:29.219307 Epoch  6 completed!
+2022-08-29 17:57:29.219330 Epoch  6       | Test accuracy: 0.953 | 
+0.0
+accs: 0.9498075
+2022-08-29 18:04:50.296382 Epoch  7 completed!
+2022-08-29 18:04:50.296419 Epoch  7       | Test accuracy: 0.948 | 
+0.0
+accs: 0.9527064
+2022-08-29 18:12:05.919014 Epoch  8 completed!
+2022-08-29 18:12:05.919037 Epoch  8       | Test accuracy: 0.949 | 
+0.0
+accs: 0.9501343
+2022-08-29 18:19:32.568900 Epoch  9 completed!
+2022-08-29 18:19:32.568940 Epoch  9       | Test accuracy: 0.947 | 
+0.0
+accs: 0.95104593
+2022-08-29 18:26:58.497698 Epoch 10 completed!
+2022-08-29 18:26:58.497736 Epoch 10       | Test accuracy: 0.948 | 
+0.0
+accs: 0.957037
+2022-08-29 18:34:29.778698 Epoch 11 completed!
+2022-08-29 18:34:29.778737 Epoch 11       | Test accuracy: 0.951 | 
+0.0
+accs: 0.95840293
+2022-08-29 18:41:58.337995 Epoch 12 completed!
+2022-08-29 18:41:58.338032 Epoch 12       | Test accuracy: 0.952 | 
+0.0
+accs: 0.96078074
+2022-08-29 18:49:38.911139 Epoch 13 completed!
+2022-08-29 18:49:38.911163 Epoch 13       | Test accuracy: 0.954 | 
+0.0
+accs: 0.96025914
+2022-08-29 18:57:29.734437 Epoch 14 completed!
+2022-08-29 18:57:29.734477 Epoch 14       | Test accuracy: 0.952 | 
+0.0
+accs: 0.96223927
+2022-08-29 19:05:12.926624 Epoch 15 completed!
+2022-08-29 19:05:12.926663 Epoch 15       | Test accuracy: 0.952 | 
+0.0
+accs: 0.9655009
+2022-08-29 19:13:02.091005 Epoch 16 completed!
+2022-08-29 19:13:02.091029 Epoch 16       | Test accuracy: 0.957 | 
+0.0
+accs: 0.96668357
+2022-08-29 19:20:56.301623 Epoch 17 completed!
+2022-08-29 19:20:56.301660 Epoch 17       | Test accuracy: 0.954 | 
+0.0
+accs: 0.96648717
+2022-08-29 19:29:11.598529 Epoch 18 completed!
+2022-08-29 19:29:11.598566 Epoch 18       | Test accuracy: 0.952 | 
+0.0
+accs: 0.9669641
+2022-08-29 19:37:22.028447 Epoch 19 completed!
+2022-08-29 19:37:22.028485 Epoch 19       | Test accuracy: 0.956 | 
+0.0
+accs: 0.9671262
+2022-08-29 19:45:37.600561 Epoch 20 completed!
+2022-08-29 19:45:37.600600 Epoch 20       | Test accuracy: 0.949 | 
+0.0
+accs: 0.9664394
+2022-08-29 19:53:58.693740 Epoch 21 completed!
+2022-08-29 19:53:58.693781 Epoch 21       | Test accuracy: 0.953 | 
+0.0
+accs: 0.96934646
+2022-08-29 20:02:24.047970 Epoch 22 completed!
+2022-08-29 20:02:24.047995 Epoch 22       | Test accuracy: 0.954 | 
+0.0
+accs: 0.9698934
+2022-08-29 20:10:58.622480 Epoch 23 completed!
+2022-08-29 20:10:58.622519 Epoch 23       | Test accuracy: 0.953 | 
+0.0

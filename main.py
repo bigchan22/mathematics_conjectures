@@ -67,6 +67,7 @@ if use_pretrained_weights:
             trained_params = pickle.load(f)
     except:
         print("There is no trained parameter")
+        print(PARAM_FILE)
         use_pretrained_weights = False
 if use_pretrained_weights is False:
     print("Not using pretrained weights")
@@ -78,7 +79,7 @@ if use_pretrained_weights is False:
         rows_2=train_dataset.rows_2[0],
         cols_2=train_dataset.columns_2[0],
         batch_size=1,
-        masks=train_dataset.features[0][np.newaxis, :, :])
+        masks=jnp.zeros((batch_size,42,1)))
 
 trained_opt_state = opt_init(trained_params)#22237 initial memory use
 best_acc = None
@@ -105,7 +106,10 @@ for ep in range(1, num_epochs + 1):
     cols_2_train = list(cols_2_train)
     ys_train = np.array(ys_train)
     root_nodes_train = list(root_nodes_train)
-    # root_nodes_train = jnp.ones_like(np.array(root_nodes_train))
+    tot_accs=0.0
+    #:
+    print(tot_accs)
+    root_nodes_train = jnp.ones_like(np.array(root_nodes_train))
     for i in range(0, len(features_train), batch_size):
         b_features, b_rows_1, b_cols_1, b_rows_2, b_cols_2, b_ys, b_masks = batch(
             features_train[i:i + batch_size],
@@ -116,7 +120,7 @@ for ep in range(1, num_epochs + 1):
             ys_train[i:i + batch_size],
             root_nodes_train[i:i + batch_size],
         )
-        b_masks = jnp.ones_like(b_masks) / N
+#        b_masks = jnp.ones_like(b_masks) / N
         curr_loss, gradient = loss_val_gr(trained_params, b_features, b_rows_1, b_cols_1,
                                           b_rows_2, b_cols_2, b_ys, b_masks)
         updates, trained_opt_state = opt_update(gradient, trained_opt_state)
@@ -124,6 +128,8 @@ for ep in range(1, num_epochs + 1):
 
         accs = model.accuracy(trained_params, b_features, b_rows_1, b_cols_1,
                               b_rows_2, b_cols_2, b_ys, b_masks, )#22512 ? 22427?22475?22523
+        tot_accs += accs * batch_size
+    print("accs:", tot_accs/len(features_train)) 
 #         print(datetime.datetime.now(),
 #               f"Iteration {i:5d} | Batch loss {curr_loss:.6f}",
 #               f"Batch accuracy {accs:.2f}")
@@ -132,6 +138,6 @@ for ep in range(1, num_epochs + 1):
     test_acc = print_test_accuracies(model, trained_params,test_dataset, batch_size)
     if best_acc == None or best_acc < test_acc:
         best_acc = test_acc
-        if save_trained_weights and best_acc > 0.9:
+        if save_trained_weights and best_acc > 0.3:
             with open(PARAM_FILE, 'wb') as f:
                 pickle.dump(trained_params, f)

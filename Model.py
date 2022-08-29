@@ -500,35 +500,14 @@ class Model_list:
             hidden_1 = gnn(hidden, rows_1, cols_1)
             hidden_2 = gnns_2[idx](hidden, rows_2, cols_2)
             hidden = hidden_1 + hidden_2
-#             print("hidden shape",hidden.shape)
-#             print("hidden mean",jnp.mean(hidden))
-#             print("hidden value",jnp.reshape(hidden, (batch_size, -1, self._size_graph, self._num_features)))
-#             print(jnp.max(jnp.reshape(hidden, (batch_size, -1, self._size_graph, self._num_features)), axis=2))
-#             print(jnp.sum(jnp.max(jnp.reshape(hidden, (batch_size, -1, self._size_graph, self._num_features)), axis=2),axis=1))
-        # for gnn in gnns_1:
-        #     hidden_1 = gnn(hidden_1, rows_1, cols_1)
-        #     # hiddens.append(jnp.reshape(hidden_1, (batch_size, -1, self._num_features)))
-        # for gnn in gnns_2:
-        #     hidden_2 = gnn(hidden_2, rows_2, cols_2)
-        #     # hiddens.append(jnp.reshape(hidden_2, (batch_size, -1, self._num_features)))
+        hidden = jnp.reshape(hidden, (batch_size, -1, self._num_features))#(배치사이즈, 총 노드 크기, 벡터크기)
+        hidden= masks * hidden
 
-        # hidden_1 = jnp.reshape(hidden_1, (batch_size, -1, self._num_features))
-        # hidden_1 = jnp.reshape(hidden_1, (batch_size, -1, self._size_graph, self._num_features))
         hidden = jnp.reshape(hidden, (batch_size, -1, self._size_graph, self._num_features))
-        # # hidden_2 = jnp.reshape(hidden_2, (batch_size, -1, self._num_features))
-        # hidden_2 = jnp.reshape(hidden_2, (batch_size, -1, self._size_graph, self._num_features))
-        # hidden = hidden_1 + hidden_2
-        #print(hidden.shape)
-        #print(jnp.mean(hidden))
-        #print(jnp.max(hidden, axis=2).shape)
-        # h_bar = jnp.max(hidden, axis=2)
-        # h_bar = jnp.sum(h_bar, axis=1)
-        h_bar = jnp.max(jnp.max(hidden, axis=2), axis=1)
-#         print(h_bar.shape)
-#         print(jnp.mean(h_bar))
+        
+        hidden = jnp.max(hidden, axis=2)# 그래프 별 특징 모으기
+        h_bar=jnp.sum(hidden,axis=1) # 그래프들을 다 더한다.
         lgts = out_enc(h_bar)
-#         print(lgts.shape)
-#         print(jnp.mean(lgts))
         lgts = lgts.reshape(batch_size, self._size_graph, self._num_classes)
         return hiddens, lgts
 

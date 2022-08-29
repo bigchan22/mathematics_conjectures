@@ -6,7 +6,7 @@ partition_parts = [i for i in range(1,N+1)]
 num_layers = 7
 num_features = 256
 num_epochs = 300
-batch_size = 180
+batch_size = 128
 use_pretrained_weights = True
 save_trained_weights = True
 
@@ -26,7 +26,7 @@ feature_list = {
 
 label_size = {7: [0, 60, 36, 35, 28, 38, 58, 85]}
 
-step_size = 0.000003
+step_size = 0.001
 train_fraction = .8
 
 DIR_PATH = '/root/Hwang/mathematics_conjectures'
@@ -37,5 +37,5 @@ NUM_GRAPHS = len([f for f in os.listdir(GRAPH_DIR) if f.startswith("graph_")])
 PARAM_FILE = os.path.join(PARAM_DIR, f'parameters_{N}_{partition_parts}_{num_layers}_{num_features}')
 for key in feature_list.keys():
     PARAM_FILE += f'_{key}'
-PARAM_FILE += 'maxed.pickle'
+PARAM_FILE += '_min2.pickle'
 
