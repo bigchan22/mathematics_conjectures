@@ -9,32 +9,28 @@
           <option name="fileUrl" value="file://$PROJECT_DIR$/test.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="471" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/main.py" />
-        </OpenedFileInfo>
-        <OpenedFileInfo>
-          <option name="caretOffset" value="6223" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/test_v3.py" />
-        </OpenedFileInfo>
-        <OpenedFileInfo>
           <option name="caretOffset" value="3029" />
           <option name="fileUrl" value="file://$PROJECT_DIR$/utils.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="683" />
+          <option name="caretOffset" value="74" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/train.sh" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="24995" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/Model.py" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="160" />
           <option name="fileUrl" value="file://$PROJECT_DIR$/training_info.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="1882" />
+          <option name="caretOffset" value="949" />
           <option name="fileUrl" value="file://$PROJECT_DIR$/data_loader.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="142967" />
-          <option name="fileUrl" value="file://$USER_HOME$/.cache/JetBrains/RemoteDev-PY/_root_Min_mathematics_conjectures/python_stubs/471880044/builtins.py" />
-        </OpenedFileInfo>
-        <OpenedFileInfo>
-          <option name="caretOffset" value="17725" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/Model.py" />
+          <option name="caretOffset" value="476" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/main.py" />
         </OpenedFileInfo>
       </list>
     </option>

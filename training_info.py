@@ -7,7 +7,7 @@ num_layers = 7
 num_features = 256
 num_epochs = 300
 batch_size = 128
-use_pretrained_weights = True
+use_pretrained_weights = False
 save_trained_weights = True
 
 feature_list = {
