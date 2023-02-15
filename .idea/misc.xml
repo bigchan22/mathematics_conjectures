@@ -17,20 +17,20 @@
           <option name="fileUrl" value="file://$PROJECT_DIR$/train.sh" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="24995" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/Model.py" />
-        </OpenedFileInfo>
-        <OpenedFileInfo>
-          <option name="caretOffset" value="160" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/training_info.py" />
-        </OpenedFileInfo>
-        <OpenedFileInfo>
           <option name="caretOffset" value="949" />
           <option name="fileUrl" value="file://$PROJECT_DIR$/data_loader.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
           <option name="caretOffset" value="476" />
           <option name="fileUrl" value="file://$PROJECT_DIR$/main.py" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="532" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/training_info.py" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="24995" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/Model.py" />
         </OpenedFileInfo>
       </list>
     </option>
